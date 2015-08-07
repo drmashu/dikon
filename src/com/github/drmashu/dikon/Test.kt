@@ -6,15 +6,18 @@ package com.github.drmashu.dikon
 fun main(args: Array<String>) {
     val dikon = Dikon(hashMapOf(
             Pair("Test", SingletonFactory(kClass = TestComponent::class)),
-            Pair("A", object: ComponentFactory { override fun create():Any? { return "A" }}),
-            Pair("B", object: ComponentFactory { override fun create():Any? { return "B" }})
+            Pair("A", "A"),
+            Pair("B", object: ObjectFactory<String> { override fun create():String? { return "B" }}),
+            Pair("C", object: ObjectFactory<String> { override fun create():String? { return "B" } })
     ))
     val comp = dikon.get("Test")
     if (comp is TestComponent) {
-        println( comp.A );
+        println( comp.A + comp.C?.B);
     }
 }
 
-class TestComponent {
+data class TestComponent {
     var A : String? = null
+    var C : TestComponent2? = null
 }
+data class TestComponent2(val A: String, val B: String)

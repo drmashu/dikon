@@ -7,22 +7,22 @@ import kotlin.reflect.jvm.*
  * DI KONtainer
  * @author NAGASAWA Takahiro
  */
-public class Dikon(val factories:Map<String, Any>) {
+public class Dikon(val objectMap:Map<String, Any>) {
 
     /**
      * オブジェクトの取得
      * @param name
      */
     public fun get(name:String) : Any? {
-        val factory = factories[name]
+        val obj = objectMap[name]
 
         return injectProperties(
-            if (factory == null) {
+            if (obj == null) {
                 null
-            } else if (factory is ComponentFactory) {
-                factory.create()
+            } else if (obj is ObjectFactory<*>) {
+                obj.create()
             } else {
-                factory
+                obj
             }
         )
     }
@@ -37,8 +37,16 @@ public class Dikon(val factories:Map<String, Any>) {
             try {
                 for(member in kClass.members) {
                     if (member is KMutableProperty1<*,*>) {
+                        var name = member.name
+                        for (annotation in member.annotations) {
+                            // 注入元指定のアノテーションがある場合は、その名称で注入する
+                            if (annotation is injectFrom) {
+                                name = annotation.name
+                                break
+                            }
+                        }
                         // set可能なプロパティを対象にする
-                        callSetter(obj, member.javaSetter,  get(member.name))
+                        callSetter(obj, member.javaSetter, get(name))
                     } else if (member is KFunction && member.name.startsWith("set")) {
                         // setで始まるメソッドを対象にする
                         callSetter(obj, member.javaMethod, get(member.name.substring(3)))
@@ -73,3 +81,7 @@ public class Dikon(val factories:Map<String, Any>) {
     }
 }
 
+/**
+ * 注入元指定アノテーション
+ */
+annotation class injectFrom(val name: String)

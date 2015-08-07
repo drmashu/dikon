@@ -6,17 +6,17 @@ import kotlin.reflect.KClass
  * オブジェクトの生成方法を定義するためのインターフェイス
  * @author NAGASAWA Takahiro
  */
-public interface ComponentFactory {
-    fun create() : Any?
+public interface ObjectFactory<T> {
+    fun create() : T?
 }
 
 /**
  * シングルトンを実装するファクトリ
  * @author NAGASAWA Takahiro
  */
-public open class SingletonFactory(val kClass: KClass<*>) : ComponentFactory {
-    var instance :Any? = null
-    public override fun create() : Any?
+public open class SingletonFactory<T>(val kClass: KClass<T>) : ObjectFactory<T> {
+    var instance :T? = null
+    public override fun create() : T?
     {
         // インスタンスが存在しない場合だけ、インスタンスを作成する
         if (instance == null) {
