@@ -8,6 +8,5 @@
     <orderEntry type="jdk" jdkName="1.7" jdkType="JavaSDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" exported="" name="KotlinJavaRuntime-newer" level="project" />
-    <orderEntry type="library" name="KotlinJavaRuntime-newer" level="project" />
   </component>
 </module>
