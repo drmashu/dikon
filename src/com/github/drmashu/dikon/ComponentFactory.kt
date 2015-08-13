@@ -1,8 +1,5 @@
-package com.github.drmashu.dikon.factory
+package com.github.drmashu.dikon
 
-import com.github.drmashu.dikon.Dikon
-import com.github.drmashu.dikon.create
-import com.github.drmashu.dikon.inject
 import kotlin.reflect.KClass
 import kotlin.reflect.primaryConstructor
 
@@ -10,7 +7,7 @@ import kotlin.reflect.primaryConstructor
  * オブジェクトの生成方法を定義するためのインターフェイス
  * @author NAGASAWA Takahiro<drmashu@gmail.com>
  */
-public interface ObjectFactory<T> {
+public interface Factory<T> {
     /**
      * インスタンスの取得
      * @return インスタンス
@@ -22,13 +19,13 @@ public interface ObjectFactory<T> {
  * シングルトンを実装するファクトリ
  * @author NAGASAWA Takahiro<drmashu@gmail.com>
  */
-public open class Singleton<T>(val factory: ObjectFactory<T>?, val kClass: KClass<T>?) : ObjectFactory<T> {
+public open class Singleton<T>(val factory: Factory<T>?, val kClass: KClass<T>?) : Factory<T> {
 
     /**
      * コンストラクタ,
      * @param factory 対象のインスタンスを作成するファクトリ
      */
-    public constructor(factory: ObjectFactory<T>) : this(factory, null)
+    public constructor(factory: Factory<T>) : this(factory, null)
 
     /**
      * コンストラクタ,
@@ -66,7 +63,7 @@ public open class Singleton<T>(val factory: ObjectFactory<T>?, val kClass: KClas
  * デフォルト値を設定してもnullを設定するため注意。
  * @author NAGASAWA Takahiro<drmashu@gmail.com>
  */
-public open class Injection<T>(val kClass: KClass<T>) : ObjectFactory<T> {
+public open class Injection<T>(val kClass: KClass<T>) : Factory<T> {
 
     /**
      * インスタンスの取得

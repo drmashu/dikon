@@ -1,5 +1,4 @@
 package com.github.drmashu.dikon
-import com.github.drmashu.dikon.factory.ObjectFactory
 import java.lang.reflect.Method
 import kotlin.reflect.*
 import kotlin.reflect.jvm.*
@@ -22,7 +21,7 @@ public class Dikon(val objectMap: Map<String, Any>) {
         return injectProperties(
             if (obj == null) {
                 null
-            } else if (obj is ObjectFactory<*>) {
+            } else if (obj is Factory<*>) {
                 obj.get(this)
             } else if (obj is KClass<*>) {
                 obj.create()
@@ -32,6 +31,7 @@ public class Dikon(val objectMap: Map<String, Any>) {
         )
     }
 
+    private val INJECT_CLASS = (inject::class).java
     /**
      * プロパティへの依存性注入
      * @param obj 対象のオブジェクト
@@ -54,13 +54,17 @@ public class Dikon(val objectMap: Map<String, Any>) {
                                 break
                             }
                         }
-                    } else if (member is KFunction && member.name.startsWith("set")) {
+                    } else if (member is KFunction) {
                         for (annotation in member.annotations) {
                             // 注入元指定のアノテーションがある場合は、その名称で注入する
                             if (annotation is inject) {
-                                var name = member.name.substring(3)
+                                var name = member.name
+
                                 if (!annotation.name.isEmpty()) {
                                     name = annotation.name
+                                } else if( name.length() > 3 && (name.startsWith("set") || name.startsWith("Set"))) {
+                                    // setで始まる場合はsetを除く
+                                    name = member.name.substring(3)
                                 }
                                 // setで始まるメソッドを対象にする
                                 callSetter(obj, member.javaMethod, get(name))
@@ -70,15 +74,7 @@ public class Dikon(val objectMap: Map<String, Any>) {
                     }
                 }
             } catch (e:KotlinReflectionInternalError) {
-                // Kotlinでのリフレクションが失敗する場合
-                val jClass = obj.javaClass
-                for(method in jClass.methods) {
-                    val name = method.name
-                    if (name.startsWith("set")) {
-                        // setで始まるメソッドを対象にする
-                        callSetter(obj, method, get(name.substring(3)))
-                    }
-                }
+                // Kotlinでのリフレクションが失敗する場合(Javaのクラスなど)は自動ではインジェクションしない
             }
         }
         return obj
