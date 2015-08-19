@@ -1,18 +1,18 @@
 package com.github.drmashu.buri.template
 
+import com.github.drmashu.buri.template.parser.BuriLexer
+import com.github.drmashu.buri.template.parser.BuriParser
+import com.github.drmashu.buri.template.parser.BuriParserBaseListener
+import org.antlr.v4.runtime.ANTLRInputStream
+import org.antlr.v4.runtime.CommonTokenStream
 import java.io.*
 import java.util.*
-import kotlin.text.Regex
 
 /**
  * テンプレートプリコンパイラ.
  * @author NAGASAWA Takahiro<drmashu@gmail.com>
  */
 public class PreCompiler {
-    companion object {
-        private val FIRST_LINE = Regex("@\\(([^)]*)\\)")
-        private val COMMAND = Regex("(if|for)(\\([^\\)]*\\))")
-    }
     /**
      * ディレクトリ中の全ファイルをプリコンパイルする。
      * @param _srcDir 対象ディレクトリ
@@ -71,69 +71,82 @@ public class PreCompiler {
      * @param className 出力クラス名
      */
     fun precompile(reader: Reader, writer: Writer, className: String) {
-        var textReader = LineNumberReader(reader)
-        var line :String? = textReader.readLine()
         //先頭のコメント
         writer.write("/** Generate source code by Buri Template PreCompiler at ${Date()}*/\n")
         // クラス名
         writer.write("class $className : Renderer {\n")
+        val lexer = BuriLexer(ANTLRInputStream(reader))
+        val parser = BuriParser(CommonTokenStream(lexer))
 
-        //一行目専用処理
-        var param : String? = null
-        // 一行目の先頭が"@"で始まっていたら、このレンダラーのパラメータが指定されるということ
-        if (line != null && line.startsWith("@")) {
-            // カッコ内をとりだして、レンダラーメソッドのパラメータにする
-            val match = FIRST_LINE.match(line)
-            param = match?.groups?.get(1)?.value
-            line = textReader.readLine()
-        }
-        if (param == null) {
-            //取り出せなければ、パラメータは空
-            param = ""
-        }
-        //
-        writer.write("\tfun override render($param) : String {\n")
-        writer.write("\t\tvar ___buffer = StringBuffer()\n")
-
-        while (line != null) {
-            val rowNo = textReader.lineNumber
-            writer.write("/* $rowNo */ ___buffer.append(\"")//元ファイルの行番号埋め込み
-            var idx = 0
-            var brace: Int = 0
-            val len = line.length()
-            chars@while(idx < len) {
-                val ch = line[idx++]
-                if (ch == '@') {
-                    if (idx + 1 >= len) {
-                        // TODO エラー
-                        throw Exception("意味のない@がある")
+        val listener = object : BuriParserBaseListener() {
+            override fun enterTemplate(ctx: BuriParser.TemplateContext) {
+                val param = ctx.start.text
+                writer.write("\tfun override render(${param.substring(2, param.length()-1)}) : String {\n")
+                writer.write("\t\tvar ___buffer = StringBuffer()\n")
+            }
+            override fun enterDocument(ctx: BuriParser.DocumentContext) {
+                ctx.start.text
+            }
+            override fun exitText(ctx: BuriParser.TextContext) {
+                writer.write("/* ${ctx.start.line} */___buffer.append(\"\"\"")
+                for(elem in ctx.children) {
+                    writer.write(if (elem.text == "@@") "@" else elem.text)
+                }
+                writer.write("\"\"\")\n")
+            }
+            override fun enterElement(ctx: BuriParser.ElementContext) {
+                val text = ctx.start.text
+                when (text) {
+                     "@for" -> {
+                        writer.write("/* ${ctx.start.line} */for ")
                     }
-                    val next = line[idx]
-                    when (next) {
-                        '@' -> {
-                            if (idx + 1 < len && line[idx+1] == '@') {
-                                writer.write('@'.toInt())
-                                idx++
-                            } else {
-                                break@chars
-                            }
-                        }
-                        '{' -> {
-
-                        }
-                        else -> {
-
+                    "@if" -> {
+                        writer.write("/* ${ctx.start.line} */if ")
+                    }
+                    else -> {
+                        if(text.startsWith("@{")) {
+                            writer.write("/* ${ctx.start.line} */___buffer.append( ${text.substring(2, text.length() - 1)} )\n")
                         }
                     }
-                } else {
-                    writer.write(ch.toInt())
                 }
             }
-            line = textReader.readLine()
+            override fun exitElement(ctx: BuriParser.ElementContext) {
+                val text = ctx.start.text
+                when (text) {
+                    "@for" -> {
+                    }
+                    "@if" -> {
+                    }
+                    else -> {
+                        if(text.startsWith("@{")) {
+                        }
+                    }
+                }
+                ctx.stop.text
+            }
+
+            override fun enterConditions(ctx: BuriParser.ConditionsContext) {
+                writer.write(ctx.start.text)
+            }
+            override fun exitConditions(ctx: BuriParser.ConditionsContext) {
+                ctx.stop.text
+            }
+
+            override fun enterContent(ctx: BuriParser.ContentContext) {
+                ctx.start.text
+            }
+            override fun exitContent(ctx: BuriParser.ContentContext) {
+                ctx.stop.text
+            }
+
+            override fun exitTemplate(ctx: BuriParser.TemplateContext) {
+                writer.write("\t\treturn ___buffer.toString()\n")
+                writer.write("\t}\n")
+                writer.write("}\n")
+            }
         }
-        writer.write("\t\treturn ___buffer.toString()\n")
-        writer.write("\t}\n")
-        writer.write("}\n")
+        parser.addParseListener(listener)
+        parser.template()
     }
 }
 

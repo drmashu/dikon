@@ -18,13 +18,15 @@ public class PreCompilerTest {
      */
     test fun testPreCompileEmpty() {
         val compiler = PreCompiler()
-        val reader = StringReader("")
+        val reader = StringReader("""@()
+        """)
         val writer = StringWriter(1024)
         compiler.precompile(reader, writer, "test")
         assertEquals("/** Generate source code by Buri Template PreCompiler at ${Date()}*/\n"
                 + "class test : Renderer {\n"
                 + "\tfun override render() : String {\n"
                 + "\t\tvar ___buffer = StringBuffer()\n"
+                + "/* 1 */___buffer.append(\"\"\"\n        \"\"\")\n"
                 + "\t\treturn ___buffer.toString()\n"
                 + "\t}\n"
                 + "}\n"
@@ -39,23 +41,25 @@ public class PreCompilerTest {
 <html>
 <head></head>
 <body>
-drmashu@@@gmail.com
+drmashu@@gmail.com
 <br>
 <ol>
 @for(idx in 0..10) {
-    @if(idx % 2 == 0) {
+    @if(idx % 3 == 0) {
+        <li> san!
+    } else if(idx % 2 == 0) {
         <li> even
     } else {
         <li> odd
     }
 }
-@@comment
+@//comment
 @for(text in list)
 {
     <li>@{text}
 }
-@for(text in list)<li>@{text}
 </ol>
+<input name="aa" value="@{value}"/>
 </body>
 </html>
 """)
