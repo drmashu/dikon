@@ -1,8 +1,8 @@
 package com.github.drmashu.buri.template
 
+import com.github.drmashu.buri.template.parser.BuriBaseListener
 import com.github.drmashu.buri.template.parser.BuriLexer
 import com.github.drmashu.buri.template.parser.BuriParser
-import com.github.drmashu.buri.template.parser.BuriParserBaseListener
 import org.antlr.v4.runtime.ANTLRInputStream
 import org.antlr.v4.runtime.CommonTokenStream
 import java.io.*
@@ -39,7 +39,7 @@ public class PreCompiler {
             distDir.mkdirs()
         }
         for (file in srcDir.listFiles()) {
-            if(file.isDirectory) {
+            if(file.isDirectory()) {
                 walkDir(file, File(distDir, file.getName()))
             } else {
                 precompile(file, distDir)
@@ -78,65 +78,60 @@ public class PreCompiler {
         val lexer = BuriLexer(ANTLRInputStream(reader))
         val parser = BuriParser(CommonTokenStream(lexer))
 
-        val listener = object : BuriParserBaseListener() {
+        val listener = object : BuriBaseListener() {
             override fun enterTemplate(ctx: BuriParser.TemplateContext) {
-                val param = ctx.start.text
+                val param = ctx.start.getText()
                 writer.write("\tfun override render(${param.substring(2, param.length()-1)}) : String {\n")
                 writer.write("\t\tvar ___buffer = StringBuffer()\n")
             }
-            override fun enterDocument(ctx: BuriParser.DocumentContext) {
-                ctx.start.text
+            override fun enterBody(ctx: BuriParser.BodyContext) {
+                ctx.start.getText()
+            }
+            override fun exitBody(ctx: BuriParser.BodyContext) {
+                ctx.stop.getText()
             }
             override fun exitText(ctx: BuriParser.TextContext) {
-                writer.write("/* ${ctx.start.line} */___buffer.append(\"\"\"")
+                writer.write("/* ${ctx.start.getLine()} */___buffer.append(\"\"\"")
                 for(elem in ctx.children) {
-                    writer.write(if (elem.text == "@@") "@" else elem.text)
+                    writer.write(if (elem.getText() == "@@") "@" else elem.getText())
                 }
                 writer.write("\"\"\")\n")
             }
-            override fun enterElement(ctx: BuriParser.ElementContext) {
-                val text = ctx.start.text
-                when (text) {
-                     "@for" -> {
-                        writer.write("/* ${ctx.start.line} */for ")
-                    }
-                    "@if" -> {
-                        writer.write("/* ${ctx.start.line} */if ")
-                    }
-                    else -> {
-                        if(text.startsWith("@{")) {
-                            writer.write("/* ${ctx.start.line} */___buffer.append( ${text.substring(2, text.length() - 1)} )\n")
-                        }
-                    }
-                }
+            override fun enterElemInsert(ctx: BuriParser.ElemInsertContext) {
+                val text = ctx.start.getText()
+                writer.write("/* ${ctx.start.getLine()} */___buffer.append( ${text.substring(2, text.length() - 1)} )\n")
             }
-            override fun exitElement(ctx: BuriParser.ElementContext) {
-                val text = ctx.start.text
-                when (text) {
-                    "@for" -> {
-                    }
-                    "@if" -> {
-                    }
-                    else -> {
-                        if(text.startsWith("@{")) {
-                        }
-                    }
-                }
-                ctx.stop.text
+            override fun enterElemIf(ctx: BuriParser.ElemIfContext) {
+                val text = ctx.start.getText()
+                writer.write("/* ${ctx.start.getLine()} */if ")
             }
-
+            override fun enterElemElseIf(ctx: BuriParser.ElemElseIfContext) {
+                writer.write("/* ${ctx.start.getLine()} */else if ")
+            }
+            override fun enterElemElse(ctx: BuriParser.ElemElseContext) {
+                writer.write("/* ${ctx.start.getLine()} */else ")
+            }
+            override fun enterElemFor(ctx: BuriParser.ElemForContext) {
+                writer.write("/* ${ctx.start.getLine()} */for ")
+            }
+            override fun enterElemBrake(ctx: BuriParser.ElemBrakeContext) {
+                writer.write("/* ${ctx.start.getLine()} */break\n")
+            }
+            override fun enterElemContinue(ctx: BuriParser.ElemContinueContext) {
+                writer.write("/* ${ctx.start.getLine()} */continue\n")
+            }
             override fun enterConditions(ctx: BuriParser.ConditionsContext) {
-                writer.write(ctx.start.text)
+                writer.write(ctx.start.getText())
             }
             override fun exitConditions(ctx: BuriParser.ConditionsContext) {
-                ctx.stop.text
+                ctx.stop.getText()
             }
 
             override fun enterContent(ctx: BuriParser.ContentContext) {
-                ctx.start.text
+                ctx.start.getText()
             }
             override fun exitContent(ctx: BuriParser.ContentContext) {
-                ctx.stop.text
+                ctx.stop.getText()
             }
 
             override fun exitTemplate(ctx: BuriParser.TemplateContext) {

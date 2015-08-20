@@ -1,30 +1,21 @@
-grammar Buri;
+lexer grammar BuriLexer;
 
-template: templateParam body;
-templateParam: TEMPLATE_PARAM;
+ANY_TEXT: ~'@'+;
 
-body: (text | element/* | comment*/)*;
-text: (HTML_TEXT | BLANK | escape)+;
-escape: ESCAPE;
+MAGIC_START: '@' -> pushMode(MAGIC);
 
-// comment: BLOCK_COMMENT | LINE_COMMENT;
+mode MAGIC;
+MAGIC_END: '@' -> popMode;
 
-element: insert | command;// | function | call;
-command: MAGIC ID? (BLANK? conditions)? (BLANK? content)?;
-/*    : cmdIf = IF BLANK* conditions BLANK* content
-    | cmdElseIf = ELSE_IF BLANK* content
-    | cmdElse = ELSE BLANK* content
-    | cmdFor = FOR BLANK* conditions BLANK* content
-    | cmdBrake = BRAKE
-    | cmdContinue = CONTINUE
-    ;
-*/
-insert: MAGIC EXPRESSION;
-//function: MAGIC FUNCTION BLANK* ID BLANK* conditions BLANK* content;
-//call: MAGIC ID BLANK* conditions;
-//test: (conditions BLANK*)+;
-conditions: BRACKET_START (CONDITION | conditions)+ BRACKET_END;
-content: BLOCK_START body BLOCK_END;
+PARAM: BRACKET_START ~[)]*? BRACKET_END;
+
+CONDITIONS: BRACKET_START BLANK* (CONDITIONS | CONDITION) BLANK* BRACKET_END;
+
+BRACKET_START: '(';
+BRACKET_END: ')';
+CONDITION: ~[\)]+?;
+
+BLANK:  (' '|'\t'|('\r'? '\n'));
 
 ID :   LETTER (LETTER | [0-9])*;
 fragment LETTER
@@ -33,35 +24,25 @@ fragment LETTER
     | [\uD800-\uDBFF] [\uDC00-\uDFFF]
     ;
 
-MAGIC: '@';
+IF: 'if';
+FOR: 'for';
+BRAKE: 'brake';
+CONTINUE: 'continue';
+FUNCTION: 'fun';
+CALL: 'call';
+INSERT: BLOCK_START ~[}]*? BLOCK_END;
 
-BLANK:  (' '|'\t'|('\r'? '\n'));
-HTML_TEXT: ~'@'+;
 
-TEMPLATE_PARAM: MAGIC BRACKET_START ~[)]*? BRACKET_END;
-EXPRESSION: BLOCK_START ~[}]*? BLOCK_END;
-
-ESCAPE: MAGIC MAGIC;
-
-BLOCK_COMMENT: COMMENT_START .*? COMMENT_END -> skip;
-fragment COMMENT_START: MAGIC COMMENT_MARK;
-fragment COMMENT_END: COMMENT_MARK MAGIC;
-fragment COMMENT_MARK: '-';
-
-LINE_COMMENT: MAGIC LINE_COMMENT_MARK ~[\r\n]* -> skip;
-fragment LINE_COMMENT_MARK: '//';
-
-IF: MAGIC 'if';
-ELSE: MAGIC 'else';
-ELSE_IF: ELSE BLANK IF;
-FOR: MAGIC 'for';
-BRAKE: MAGIC 'brake';
-CONTINUE: MAGIC 'continue';
-FUNCTION: MAGIC 'fun';
-
-BRACKET_START: '(';
-BRACKET_END: ')';
-CONDITION: ~[\)]+?;
+ELSE: 'else';
+ELSE_IF: ELSE BLANK 'if';
 
 BLOCK_START: '{';
 BLOCK_END: '}';
+
+LINE_COMMENT: '//' ~[\r\n]* -> skip;
+
+COMMENT_START: '/*' ->pushMode(COMMENT);
+
+mode COMMENT;
+COMMENT_BODY: .+? -> skip;
+COMMENT_END: '*/' -> skip, popMode;
