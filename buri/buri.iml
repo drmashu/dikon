@@ -9,9 +9,11 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" scope="TEST" name="junit-4.12" level="application" />
     <orderEntry type="library" name="KotlinJavaRuntime" level="project" />
     <orderEntry type="library" name="kotlin-compiler" level="application" />
     <orderEntry type="library" scope="TEST" name="junit-4" level="application" />
     <orderEntry type="library" exported="" name="antlr-4" level="application" />
+    <orderEntry type="library" name="servlet-api" level="application" />
   </component>
 </module>
