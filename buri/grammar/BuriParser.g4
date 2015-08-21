@@ -1,67 +1,39 @@
-grammar Buri;
+parser grammar BuriParser;
 
+options { tokenVocab=BuriLexer; }
+@members {
+
+}
 template: templateParam body;
-templateParam: TEMPLATE_PARAM;
+templateParam: MAGIC_START param MAGIC_END;
+body: (insert | command | blockEnd | comment | text)+;
+escape: MAGIC_START MAGIC_END;
 
-body: (text | element/* | comment*/)*;
-text: (HTML_TEXT | BLANK | escape)+;
-escape: ESCAPE;
-
-// comment: BLOCK_COMMENT | LINE_COMMENT;
-
-element: insert | command;// | function | call;
-command: MAGIC ID? (BLANK? conditions)? (BLANK? content)?;
-/*    : cmdIf = IF BLANK* conditions BLANK* content
-    | cmdElseIf = ELSE_IF BLANK* content
-    | cmdElse = ELSE BLANK* content
-    | cmdFor = FOR BLANK* conditions BLANK* content
-    | cmdBrake = BRAKE
-    | cmdContinue = CONTINUE
-    ;
-*/
-insert: MAGIC EXPRESSION;
-//function: MAGIC FUNCTION BLANK* ID BLANK* conditions BLANK* content;
-//call: MAGIC ID BLANK* conditions;
-//test: (conditions BLANK*)+;
-conditions: BRACKET_START (CONDITION | conditions)+ BRACKET_END;
-content: BLOCK_START body BLOCK_END;
-
-ID :   LETTER (LETTER | [0-9])*;
-fragment LETTER
-    : [a-zA-Z$_]
-    | ~[\u0000-\u00FF\uD800-\uDBFF]
-    | [\uD800-\uDBFF] [\uDC00-\uDFFF]
+insert: MAGIC_START INSERT MAGIC_END;
+command
+    : cmdIf
+    | cmdElseIf
+    | cmdElse
+    | cmdFor
+    | cmdBrake
+    | cmdContinue
+    | cmdFunction
+    | cmdCall
     ;
 
-MAGIC: '@';
+cmdIf: MAGIC_START IF BLANK* conditions BLANK* BLOCK_START MAGIC_END;
+cmdElseIf: MAGIC_START BLOCK_END BLANK* ELSE_IF BLANK* conditions BLANK* BLOCK_START MAGIC_END;
+cmdElse: MAGIC_START BLOCK_END BLANK* ELSE BLANK* BLOCK_START MAGIC_END;
+cmdFor: MAGIC_START FOR BLANK* conditions BLANK* BLOCK_START MAGIC_END;
+cmdBrake: MAGIC_START BRAKE MAGIC_END;
+cmdContinue: MAGIC_START CONTINUE MAGIC_END;
+cmdFunction: MAGIC_START FUNCTION BLANK+ ID param BLANK* BLOCK_START MAGIC_END;
+cmdCall: MAGIC_START CALL BLANK+ conditions MAGIC_END;
 
-BLANK:  (' '|'\t'|('\r'? '\n'));
-HTML_TEXT: ~'@'+;
+param: PARAM;
+conditions: CONDITIONS;
+text: (escape | BLANK | ANY_TEXT)+;
 
-TEMPLATE_PARAM: MAGIC BRACKET_START ~[)]*? BRACKET_END;
-EXPRESSION: BLOCK_START ~[}]*? BLOCK_END;
+comment: MAGIC_START COMMENT_START COMMENT_BODY? COMMENT_END MAGIC_END;
 
-ESCAPE: MAGIC MAGIC;
-
-BLOCK_COMMENT: COMMENT_START .*? COMMENT_END -> skip;
-fragment COMMENT_START: MAGIC COMMENT_MARK;
-fragment COMMENT_END: COMMENT_MARK MAGIC;
-fragment COMMENT_MARK: '-';
-
-LINE_COMMENT: MAGIC LINE_COMMENT_MARK ~[\r\n]* -> skip;
-fragment LINE_COMMENT_MARK: '//';
-
-IF: MAGIC 'if';
-ELSE: MAGIC 'else';
-ELSE_IF: ELSE BLANK IF;
-FOR: MAGIC 'for';
-BRAKE: MAGIC 'brake';
-CONTINUE: MAGIC 'continue';
-FUNCTION: MAGIC 'fun';
-
-BRACKET_START: '(';
-BRACKET_END: ')';
-CONDITION: ~[\)]+?;
-
-BLOCK_START: '{';
-BLOCK_END: '}';
+blockEnd: MAGIC_START BLOCK_END MAGIC_END;
