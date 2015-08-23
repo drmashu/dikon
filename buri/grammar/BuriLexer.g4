@@ -7,13 +7,11 @@ MAGIC_START: '@' -> pushMode(MAGIC);
 mode MAGIC;
 MAGIC_END: '@' -> popMode;
 
+BRACKET_START: '(' -> pushMode(PARAM_MODE);
+
 PARAM: BRACKET_START ~[)]*? BRACKET_END;
 
-CONDITIONS: BRACKET_START BLANK* (CONDITIONS | CONDITION) BLANK* BRACKET_END;
 
-BRACKET_START: '(';
-BRACKET_END: ')';
-CONDITION: ~[\)]+?;
 
 BLANK:  (' '|'\t'|('\r'? '\n'));
 
@@ -24,8 +22,8 @@ fragment LETTER
     | [\uD800-\uDBFF] [\uDC00-\uDFFF]
     ;
 
-IF: 'if';
-FOR: 'for';
+IF: 'if' -> pushMode(CONDITIONS_MODE);
+FOR: 'for' -> pushMode(CONDITIONS_MODE);
 BRAKE: 'brake';
 CONTINUE: 'continue';
 FUNCTION: 'fun';
@@ -42,6 +40,17 @@ BLOCK_END: '}';
 LINE_COMMENT: '//' ~[\r\n]* -> skip;
 
 COMMENT_START: '/*' ->pushMode(COMMENT);
+
+mode PARAM_MODE;
+BRACKET_END: ')' -> popMode;
+
+mode CONDITIONS_MODE;
+
+CONDITIONS: '(' BLANK* (CONDITIONS | CONDITION) BLANK* ')';
+
+CONDITION: ~[\)]+?;
+
+CONDITION_END: '{';
 
 mode COMMENT;
 COMMENT_BODY: .+? -> skip;

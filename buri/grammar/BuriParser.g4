@@ -1,38 +1,46 @@
 parser grammar BuriParser;
-
 options { tokenVocab=BuriLexer; }
 @members {
 
 }
-template: templateParam body;
+buri: templateParam body;
 templateParam: MAGIC_START param MAGIC_END;
-body: (insert | command | blockEnd | comment | text)+;
-escape: MAGIC_START MAGIC_END;
+body: (text command)+ text?;
 
-insert: MAGIC_START INSERT MAGIC_END;
-command
-    : cmdIf
+command: MAGIC_START (command0 | command1 | command2 | command3 | command4) MAGIC_END;
+
+command0
+    : (cmdBrake | cmdContinue | cmdInsert);
+command1
+    : cmdCall BLANK* conditions;
+command2
+    :
+    ( cmdIf
     | cmdElseIf
-    | cmdElse
     | cmdFor
-    | cmdBrake
-    | cmdContinue
-    | cmdFunction
-    | cmdCall
-    ;
+    ) BLANK* conditions BLANK* BLOCK_START;
+command3
+    : BLOCK_END cmdElse BLANK* BLOCK_START;
+command4
+    : cmdFunction BLANK* param BLANK* BLOCK_START;
 
-cmdIf: MAGIC_START IF BLANK* conditions BLANK* BLOCK_START MAGIC_END;
-cmdElseIf: MAGIC_START BLOCK_END BLANK* ELSE_IF BLANK* conditions BLANK* BLOCK_START MAGIC_END;
-cmdElse: MAGIC_START BLOCK_END BLANK* ELSE BLANK* BLOCK_START MAGIC_END;
-cmdFor: MAGIC_START FOR BLANK* conditions BLANK* BLOCK_START MAGIC_END;
-cmdBrake: MAGIC_START BRAKE MAGIC_END;
-cmdContinue: MAGIC_START CONTINUE MAGIC_END;
-cmdFunction: MAGIC_START FUNCTION BLANK+ ID param BLANK* BLOCK_START MAGIC_END;
-cmdCall: MAGIC_START CALL BLANK+ conditions MAGIC_END;
+cmdIf: IF;
+cmdFor: FOR;
+cmdInsert: INSERT;
+
+cmdElseIf: BLOCK_END BLANK* ELSE_IF;
+cmdElse: BLOCK_END BLANK* ELSE;
+
+cmdBrake: BRAKE;
+cmdContinue: CONTINUE;
+cmdFunction: FUNCTION BLANK+ ID ;
+cmdCall: CALL;
 
 param: PARAM;
 conditions: CONDITIONS;
-text: (escape | BLANK | ANY_TEXT)+;
+
+text: (BLANK | escape | ANY_TEXT)+;
+escape: MAGIC_START MAGIC_END;
 
 comment: MAGIC_START COMMENT_START COMMENT_BODY? COMMENT_END MAGIC_END;
 
