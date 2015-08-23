@@ -125,6 +125,6 @@ drmashu@@gmail.com
         var code = writer.toString()
         print(code)
 
-        org.jetbrains.kotlin.cli.jvm.K2JVMCompiler.
+        //org.jetbrains.kotlin.cli.jvm.K2JVMCompiler.main()
     }
 }
