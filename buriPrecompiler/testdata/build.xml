@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<project name="buriTest">
+    <taskdef name="buri" classpath="${buriPrecompiler.classes}" classname="com.github.drmashu.buri.template.BuriTemplateTask"/>
+    <typedef resource="org/jetbrains/kotlin/ant/antlib.xml" classpath="${kotlin.lib}/kotlin-ant.jar"/>
+    <target name="precompile">
+        <buri srcDir="." distDir="../gensrc" packagename="test"/>
+    </target>
+<!--    <target name="build" depends="precompile">
+        <kotlinc>
+
+        </kotlinc>
+    </target>
+    -->
+</project>
