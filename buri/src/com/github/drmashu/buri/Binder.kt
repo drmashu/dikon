@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletResponse
  */
 public class Binder : HttpServlet {
 
-    public constructor(bindMap: Map<Pair<String, String>, String>): super() {
+    public constructor(bindMap: Map<String, String>): super() {
         bindMap
     }
 

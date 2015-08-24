@@ -11,22 +11,23 @@ import kotlin.text.Regex
 public class PreCompiler {
     companion object {
         private val blank = """[ \t\r\n]"""
+        private val NOT_BLANK = Regex("""[^ \t\r\n]""")
 
         private val FIRST_LINE = Regex("""@\(([^)]*)\)""")
         private val IF = Regex("${blank}*if${blank}*")
         private val FOR = Regex("${blank}*for${blank}*")
-        private val DECL_FUNCTION = Regex("${blank}*fun (.+)${blank}*")
-        private val FUNCTION = Regex("${blank}*(.+)${blank}*")
+//        private val DECL_FUNCTION = Regex("${blank}*fun (.+)${blank}*")
+//        private val FUNCTION = Regex("${blank}*(.+)${blank}*")
         private val ELSE = Regex("${blank}*else${blank}*")
         private val ELSE_IF = Regex("${blank}*else${blank}+if${blank}*")
 
         private val at = '@'.toInt()
         private val block_start = '{'.toInt()
         private val block_end = '}'.toInt()
-        private val slash = '/'.toInt()
+        private val lineCommentMark = '/'.toInt()
         private val cr = '\r'.toInt()
         private val nl = '\n'.toInt()
-        private val hyphen = '-'.toInt()
+        private val blockCommentMark = '*'.toInt()
         private val bracket_start = '('.toInt()
         private val bracket_end = ')'.toInt()
     }
@@ -56,7 +57,7 @@ public class PreCompiler {
             distDir.mkdirs()
         }
         for (file in srcDir.listFiles()) {
-            if(file.isDirectory()) {
+            if(file.isDirectory) {
                 walkDir(file, File(distDir, file.getName()))
             } else {
                 precompile(file, distDir)
@@ -94,7 +95,7 @@ public class PreCompiler {
         var lineIdx = 1
 
         //一行目専用処理
-        var param : String? = null
+        var param: String? = null
         // 一行目の先頭が"@"で始まっていたら、このレンダラーのパラメータが指定されるということ
         if (firstLine != null && firstLine.startsWith("@")) {
             // カッコ内をとりだして、レンダラーメソッドのパラメータにする
@@ -115,7 +116,7 @@ public class PreCompiler {
         writer.write("/** Generate source code by Buri Template PreCompiler at ${Date()} */\n")
         writer.write("import java.util.*\n")
         writer.write("import java.io.Writer\n")
-        writer.write("import com.github.drmashu.buri.template.Renderer\n")
+        writer.write("import com.github.drmashu.buri.Renderer\n")
 
         // クラス名
         writer.write("class $className(___writer___: Writer$param) : Renderer(___writer___) {\n")
@@ -128,7 +129,7 @@ public class PreCompiler {
             override fun process(char: Int) {
                 when(char) {
                     block_end -> {
-                        writer.write("}\")\n")
+                        writer.write("}\"))\n")
                         // インサートモードから抜ける
                         mode.pop()
                         // マジックモードから抜ける
@@ -150,63 +151,79 @@ public class PreCompiler {
                     bracket_start -> {
                         mode.push(this)
                     }
-                    else -> null
                 }
             }
         }
         // コマンドモード
         val command = object : Mode(writer) {
             var buf: StringBuffer? = null
-            var cond = false
+//            var needBlock = false
             override fun process(char: Int) {
                 if (buf == null) {
                     buf = StringBuffer()
                 }
                 when(char) {
                     at -> {
+                        if (buf != null && buf!!.length() > 0) {
+                            buf = null
+                            // コマンドのパラメータ/ブロック開始の前に @ があるとエラー
+                            throw BuriLexicalException("$lineIdx : @ の出現位置が不正です")
+                        }
+//                        needBlock = false
                         // コマンドモードから抜ける
                         mode.pop()
                         // マジックモードから抜ける
                         mode.pop()
                     }
                     bracket_start -> {
-                        val command = buf.toString()
+                        val commandName = buf.toString()
                         buf = null
-                        cond = true
-                        if (IF.matches(command)) {
+//                        needBlock = true
+                        if (IF.matches(commandName)) {
                             writer.write("/* $lineIdx */if")
-                        } else if (FOR.matches(command)) {
+                        } else if (FOR.matches(commandName)) {
                             writer.write("/* $lineIdx */for")
                         } else {
-                            val matched = DECL_FUNCTION.match(command)
-                            if (matched != null) {
-                                val funcId = matched.groups.get(1)!!.value
-                                if (!funcId.isIdentifier()) {
-                                    // TODO 識別子のルールに合致しない
-                                    throw Exception()
-                                }
-                                writer.write("/* $lineIdx */fun $funcId")
-                            } else {
-                                val matched2 = FUNCTION.match(command)
-                                if (matched2 != null) {
-                                    val funcId = matched2.groups.get(1)!!.value
-                                    if (!funcId.isIdentifier()) {
-                                        // TODO 識別子のルールに合致しない
-                                        throw Exception()
-                                    }
-                                    writer.write("/* $lineIdx */$funcId")
-                                } else {
-                                    // TODO ??
-                                    throw Exception()
-                                }
-                                cond = false
-                            }
+//                            val matched = DECL_FUNCTION.match(commandName)
+//                            if (matched != null) {
+//                                // 関数定義の場合
+//                                val funcId = matched.groups.get(1)!!.value
+//                                if (!funcId.isIdentifier()) {
+//                                    // TODO 識別子のルールに合致しない
+//                                    throw Exception()
+//                                }
+//                                writer.write("/* $lineIdx */fun $funcId")
+//                            } else {
+//                                val matched2 = FUNCTION.match(commandName)
+//                                if (matched2 != null) {
+//                                    val funcId = matched2.groups.get(1)!!.value
+//                                    if (!funcId.isIdentifier()) {
+//                                        // TODO 識別子のルールに合致しない
+//                                        throw Exception()
+//                                    }
+//                                    writer.write("/* $lineIdx */$funcId")
+//                                } else {
+//                                    // TODO 定義済み関数呼び出しでもない場合はエラー
+//                                    throw Exception()
+//                                }
+//                                needBlock = false
+//                            }
+                            // 提供されているコマンド以外の場合はエラー
+                            throw BuriLexicalException("$lineIdx : 不正なコマンドです")
                         }
                         writer.write("(")
                         mode.push(conditions)
                     }
                     block_start -> {
+//                        if (!needBlock) {
+//                            // TODO needBlock がtrueになるルートからでなければ
+//                            throw Exception()
+//                        }
+                        if (buf != null && NOT_BLANK.matches(buf!!.toString())) {
+                            throw BuriLexicalException("$lineIdx : ブロック開始の前に不正な文字があります")
+                        }
                         writer.write(" {\n")
+                        buf = null;
 //                        val next = reader.read()
 //                        if(next != at) {
 //                            // TODO 次は at 以外は許さない
@@ -230,12 +247,12 @@ public class PreCompiler {
                 when(char) {
                     at -> {
                         if (elif) {
-                            // TODO else if の後 { の前に @ が出現してはダメ
-                            throw Exception()
+                            // else if の後 { の前に @ が出現してはダメ
+                            throw BuriLexicalException("$lineIdx : @ の出現位置が不正です")
                         }
-                        if (0 != buf!!.length()) {
-                            // TODO なんらかのコマンドがあるのに
-                            throw Exception()
+                        if (0 != buf?.length()) {
+                            // なんらかのコマンドがあるのに@が出現している
+                            throw BuriLexicalException("$lineIdx : @ の出現位置が不正です")
                         }
                         writer.write("/* $lineIdx */}\n")
                         // @で終了
@@ -247,11 +264,11 @@ public class PreCompiler {
                         mode.pop()
                     }
                     bracket_start -> {
-                        val command = buf.toString()
-                        if (!ELSE_IF.matches(command)) {
+                        val commandName = buf.toString()
+                        if (!ELSE_IF.matches(commandName)) {
                             elif = false
-                            // TODO else if以外は許さない
-                            throw Exception()
+                            // else if以外は許さない
+                            throw BuriLexicalException("$lineIdx : 条件パラメータの出現位置が不正です")
                         }
                         writer.write("/* $lineIdx */} else if (")
                         mode.push(conditions)
@@ -260,19 +277,19 @@ public class PreCompiler {
                     }
                     block_start -> {
                         try {
-                            val command = buf.toString()
-                            val isElse = ELSE.matches(command)
+                            val commandName = buf.toString()
+                            val isElse = ELSE.matches(commandName)
                             if (!elif && !isElse) {
-                                // TODO else か else if 以外は許さない
-                                throw Exception()
+                                // else か else if 以外は許さない
+                                throw BuriLexicalException("$lineIdx : 不正なコマンドです")
                             }
                             if (isElse) {
                                 writer.write("/* $lineIdx */} else ")
                             }
                             writer.write("{\n")
                             if(reader.read() != at) {
-                                // TODO 次は at 以外は許さない
-                                throw Exception()
+                                // 次は at 以外は許さない
+                                throw BuriLexicalException("$lineIdx : 不正な文字があります")
                             }
                             // ブロック終了から抜ける
                             mode.pop()
@@ -304,7 +321,6 @@ public class PreCompiler {
                         mode.pop()
                         writer.write("/* $lineIdx */___writer___.write(\"\"\"")
                     }
-                    else -> null
                 }
             }
         }
@@ -313,7 +329,7 @@ public class PreCompiler {
             var commentEnd = false
             override fun process(char: Int) {
                 when(char) {
-                    hyphen -> commentEnd = true
+                    blockCommentMark -> commentEnd = true
                     at -> {
                         if (commentEnd) {
                             // ブロックコメントから抜ける
@@ -333,18 +349,18 @@ public class PreCompiler {
                     block_start -> {
                         // インサート
                         mode.push(insert)
-                        writer.write("/* $lineIdx */___writer___.write(\"\${")
+                        writer.write("/* $lineIdx */___writer___.write(encode(\"\${")
                     }
                     at -> {
                         // エスケープ
                         writer.write("/* $lineIdx */___writer___.write(\"@\")\n")
                         mode.pop()
                     }
-                    slash -> {
+                    lineCommentMark -> {
                         // 行コメント
                         mode.push(lineComment)
                     }
-                    hyphen -> {
+                    blockCommentMark -> {
                         // ブロックコメント
                         mode.push(blockComment)
                     }
@@ -406,18 +422,21 @@ public class PreCompiler {
     }
 }
 
-fun String.isIdentifier() : Boolean {
-    if (!this[0].isJavaIdentifierStart()) {
-        return false
-    }
-    var result = true
-    this.forEachIndexed { i, c ->
-        if (i > 0) {
-            result = result && c.isJavaIdentifierPart()
-        }
-    }
-    return result
-}
+///**
+// * Javaの識別子として使える文字列かどうかをチェックする
+// */
+//fun String.isIdentifier() : Boolean {
+//    if (!this[0].isJavaIdentifierStart()) {
+//        return false
+//    }
+//    var result = true
+//    this.forEachIndexed { i, c ->
+//        if (i > 0) {
+//            result = result && c.isJavaIdentifierPart()
+//        }
+//    }
+//    return result
+//}
 
 /**
  *
