@@ -14,8 +14,8 @@ public class Binder : HttpServlet {
     }
 
     public override final fun service(req: HttpServletRequest, res: HttpServletResponse) {
-        val method = req.method
-        val path = req.pathInfo
+        val method = req.getMethod()
+        val path = req.getPathInfo()
         //val action = bindMap[Pair(method, path)]
 
     }

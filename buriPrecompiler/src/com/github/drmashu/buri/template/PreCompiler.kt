@@ -33,34 +33,36 @@ public class PreCompiler {
     }
     /**
      * ディレクトリ中の全ファイルをプリコンパイルする。
+     * @param packageName パッケージ名
      * @param _srcDir 対象ディレクトリ
      * @param _distDir 出力先ディレクトリ
      */
-    fun precompileAll(_srcDir: String, _distDir: String) {
+    fun precompileAll(packageName: String, _srcDir: String, _distDir: String) {
         val srcDir = File(_srcDir)
         val distDir = File(_distDir)
         if (!srcDir.exists() || !srcDir.canRead()) {
             // 入力ディレクトリがなければエラー
             throw FileNotFoundException() // TODO どんな例外にするか・・・
         }
-        walkDir(srcDir, distDir)
+        walkDir(packageName, srcDir, distDir)
     }
 
     /**
      * ディレクトリ内のすべてのファイルを対象にする
+     * @param packageName パッケージ名
      * @param srcDir 対象ディレクトリ
      * @param distDir 出力先ディレクトリ
      */
-    private fun walkDir(srcDir: File, distDir: File) {
+    private fun walkDir(packageName: String, srcDir: File, distDir: File) {
         if (!distDir.exists()) {
             // 出力先がなければ作る
             distDir.mkdirs()
         }
         for (file in srcDir.listFiles()) {
-            if(file.isDirectory) {
-                walkDir(file, File(distDir, file.getName()))
+            if(file.isDirectory()) {
+                walkDir(packageName + "." + file.getName(), file, File(distDir, file.getName()))
             } else {
-                precompile(file, distDir)
+                precompile(packageName, file, distDir)
             }
         }
     }
@@ -68,17 +70,18 @@ public class PreCompiler {
     /**
      * 指定されたファイルをプリコンパイルする。
      * 対象のファイルが".kt.html"で終わっていない場合は、無視する。
+     * @param packageName パッケージ名
      * @param srcFile 対象ファイル
      * @param distDir 出力先ディレクトリ
      */
-    fun precompile(srcFile: File, distDir: File) {
+    fun precompile(packageName:String, srcFile: File, distDir: File) {
         val name = srcFile.name
         if (name.endsWith(".kt.html", true)) {
             val reader = FileReader(srcFile)
             val distFile = File(distDir, name.substring(0, name.length() - 5))
             val writer = FileWriter(distFile)
             val className = name.substring(0, name.length() - 8)
-            precompile(reader, writer, className)
+            precompile(reader, writer, packageName, className)
         }
     }
 
@@ -88,7 +91,7 @@ public class PreCompiler {
      * @param writer 出力先バッファ
      * @param className 出力クラス名
      */
-    fun precompile(_reader: Reader, writer: Writer, className: String) {
+    fun precompile(_reader: Reader, writer: Writer, packageName:String, className: String) {
 
         var reader = LineNumberReader(_reader)
         val firstLine :String? = reader.readLine()
@@ -447,7 +450,7 @@ fun main(args: Array<String>) {
         return
     }
     try {
-        PreCompiler().precompileAll(args[0], args[1])
+        PreCompiler().precompileAll(args[0], args[1], args[2])
     } catch (e: FileNotFoundException) {
         // TODO エラー
     }

@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/buri/buri.iml" filepath="$PROJECT_DIR$/buri/buri.iml" group="dikon suite" />
+      <module fileurl="file://$PROJECT_DIR$/buriPrecompiler/buriPrecompiler.iml" filepath="$PROJECT_DIR$/buriPrecompiler/buriPrecompiler.iml" group="dikon suite" />
       <module fileurl="file://$PROJECT_DIR$/dikon.iml" filepath="$PROJECT_DIR$/dikon.iml" group="dikon suite" />
     </modules>
   </component>
