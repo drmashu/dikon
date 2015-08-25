@@ -28,14 +28,48 @@ public class PreCompiler {
         private val blockCommentMark = '*'.toInt()
         private val bracket_start = '('.toInt()
         private val bracket_end = ')'.toInt()
+
+        /** ファイル種別ごとのレンダラースーパークラス定義 */
+        private val RENDERER_TYPE = mapOf(
+            Pair("html", "HtmlRenderer")
+        )
     }
     /**
-     * プリコンパイル処理
-     * @param reader 入力元バッファ
-     * @param writer 出力先バッファ
-     * @param className 出力クラス名
+     * 指定されたファイルをプリコンパイルする。
+     * 対象のファイルが".kt.html"で終わっていない場合は、無視する。
+     * @param packageName パッケージ名
+     * @param srcFile 対象ファイル
+     * @param destDir 出力先ディレクトリ
      */
-    fun precompile(_reader: Reader, writer: Writer, packageName:String, className: String) {
+    fun precompile(packageName:String, srcFile: File, destDir: File) {
+        val name = srcFile.name
+        for (rendererType in RENDERER_TYPE) {
+            if (name.endsWith(".kt." + rendererType.key, true)) {
+                if (!destDir.exists()) {
+                    // 出力先がなければ作る
+                    destDir.mkdirs()
+                }
+                val reader = FileReader(srcFile)
+                val distFile = File(destDir, name.substring(0, name.length() - 5))
+                val writer = FileWriter(distFile)
+                val className = name.substring(0, name.length() - 8)
+                precompile(reader, writer, packageName, className, rendererType.value)
+                writer.flush()
+                writer.close()
+                reader.close()
+            }
+        }
+    }
+
+    /**
+     * プリコンパイル処理
+     * @param _reader 入力元バッファ
+     * @param writer 出力先バッファ
+     * @param packageName パッケージ名
+     * @param className 出力クラス名
+     * @param typeName スーパークラス名
+     */
+    fun precompile(_reader: Reader, writer: Writer, packageName:String, className: String, typeName: String) {
 
         var reader = LineNumberReader(_reader)
         val firstLine :String? = reader.readLine()
@@ -68,7 +102,7 @@ public class PreCompiler {
         writer.write("import com.github.drmashu.buri.Renderer\n")
 
         // クラス名
-        writer.write("class $className(___writer___: Writer$param) : Renderer(___writer___) {\n")
+        writer.write("class $className(___writer___: Writer$param) : $typeName(___writer___) {\n")
 
         //
         writer.write("\tpublic override fun render() {\n")

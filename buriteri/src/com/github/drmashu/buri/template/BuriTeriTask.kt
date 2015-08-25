@@ -45,35 +45,9 @@ public class BuriTeriTask: Task() {
             if(file.isDirectory()) {
                 walkDir(packageName + "." + file.getName(), file, File(destDir, file.getName()))
             } else {
-                precompile(packageName, file, destDir)
+                this.log("precompile '${file.name}'.")
+                precompiler.precompile(packageName, file, destDir)
             }
-        }
-    }
-
-    /**
-     * 指定されたファイルをプリコンパイルする。
-     * 対象のファイルが".kt.html"で終わっていない場合は、無視する。
-     * @param packageName パッケージ名
-     * @param srcFile 対象ファイル
-     * @param destDir 出力先ディレクトリ
-     */
-    fun precompile(packageName:String, srcFile: File, destDir: File) {
-        val name = srcFile.name
-        if (name.endsWith(".kt.html", true)) {
-            if (!destDir.exists()) {
-                // 出力先がなければ作る
-                destDir.mkdirs()
-            }
-            this.log("precompile '$name'.")
-            val reader = FileReader(srcFile)
-            val distFile = File(destDir, name.substring(0, name.length() - 5))
-            val writer = FileWriter(distFile)
-            val className = name.substring(0, name.length() - 8)
-            precompiler.precompile(reader, writer, packageName, className)
-            writer.flush()
-            writer.close()
-            reader.close()
-            this.log("output '${distFile.name}'.")
         }
     }
 
