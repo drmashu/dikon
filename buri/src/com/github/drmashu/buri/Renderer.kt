@@ -6,14 +6,27 @@ import java.io.Writer
  * Created by tnagasaw on 2015/08/13.
  */
 public abstract class Renderer(val ___writer___: Writer) {
+    /**
+     * テンプレート変換処理
+     */
     public abstract fun render()
+    /**
+     * 埋め込まれる文字列をHTMLに影響しない文字に変換
+     */
     protected fun encode(str :String) :String {
-        var result = str
-        result = result.replace("<", "&lt;")
-        result = result.replace(">", "&gt;")
-        result = result.replace("&", "&amp;")
-        result = result.replace("\"", "&quot;")
-        result = result.replace("'", "&#39;")
-        return result
+        var buf = StringBuffer()
+        for(ch in str) {
+            buf.append(
+                when(ch) {
+                    '<' ->  "&lt;"
+                    '>' ->  "&gt;"
+                    '&' ->  "&amp;"
+                    '"' ->  "&quot;"
+                    '\'' ->  "&#39;"
+                    else ->  ch
+                }
+            )
+        }
+        return buf.toString()
     }
 }

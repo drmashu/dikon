@@ -23,6 +23,7 @@ public class PreCompilerTest {
         val writer = StringWriter(1024)
         compiler.precompile(reader, writer, "test", "test")
         assertEquals("/** Generate source code by Buri Template PreCompiler at ${Date()} */\n"
+                + "package test\n"
                 + "import java.util.*\n"
                 + "import java.io.Writer\n"
                 + "import com.github.drmashu.buri.Renderer\n"
@@ -66,6 +67,7 @@ drmashu@@gmail.com
         val writer = StringWriter(1024)
         compiler.precompile(reader, writer, "test", "test")
         assertEquals("/** Generate source code by Buri Template PreCompiler at ${Date()} */\n"
+                + "package test\n"
                 + "import java.util.*\n"
                 + "import java.io.Writer\n"
                 + "import com.github.drmashu.buri.Renderer\n"

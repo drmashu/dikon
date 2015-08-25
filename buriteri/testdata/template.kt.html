@@ -1,4 +1,4 @@
-@(list: List<String>)
+@(val list: List<String>)
 <!html>
 <!-- -->
 <html>
@@ -17,11 +17,10 @@ drmashu@@gmail.com
     @}@
 @}@
 @//comment
-@for(text in list)
-{@
+@for(text in list){@
     <li>@{text}
 @}@
 </ol>
-<input name="aa" value="@{value}"/>
+<input name="aa" value="@{this.toString()}"/>
 </body>
 </html>

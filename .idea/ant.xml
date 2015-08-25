@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AntConfiguration">
+    <buildFile url="file://$PROJECT_DIR$/buriteri/testdata/build.xml">
+      <properties>
+        <property name="kotlin.lib" value="C:\Program Files (x86)\JetBrains\IntelliJ IDEA 142.4083.2\plugins\Kotlin\kotlinc\lib" />
+        <property name="buriteri.classes" value="$ProjectFileDir$\out\production\buriteri" />
+      </properties>
+    </buildFile>
+  </component>
+</project>
