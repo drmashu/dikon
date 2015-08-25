@@ -5,11 +5,11 @@ import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
 /**
- * Created by tnagasaw on 2015/08/13.
+ * バインダークラス.
+ * URIとViewModelを結びつけるために定義を解釈し、リクエストに応じてViewModelのアクションを呼ぶ.
  */
-public class Binder : HttpServlet {
-
-    public constructor(bindMap: Map<String, String>): super() {
+public class Binder(val renderPackage: String, bindMap: Map<String, String>) : HttpServlet() {
+    init {
         bindMap
     }
 

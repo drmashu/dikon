@@ -5,10 +5,4 @@
     <target name="precompile">
         <buriteri srcdir="./buriteri/testdata" destdir="./buri/gensrc" packagename="test"/>
     </target>
-<!--    <target name="build" depends="precompile">
-        <kotlinc>
-
-        </kotlinc>
-    </target>
-    -->
 </project>
