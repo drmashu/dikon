@@ -21,7 +21,7 @@ public class PreCompilerTest {
         val reader = StringReader("""@()
 """)
         val writer = StringWriter(1024)
-        compiler.precompile(reader, writer, "test", "test")
+        compiler.precompile(reader, writer, "test", "test", "html")
         assertEquals("/** Generate source code by Buri Template PreCompiler at ${Date()} */\n"
                 + "package test\n"
                 + "import java.util.*\n"
@@ -65,7 +65,7 @@ drmashu@@gmail.com
 </html>
 """)
         val writer = StringWriter(1024)
-        compiler.precompile(reader, writer, "test", "test")
+        compiler.precompile(reader, writer, "test", "test", "html")
         assertEquals("/** Generate source code by Buri Template PreCompiler at ${Date()} */\n"
                 + "package test\n"
                 + "import java.util.*\n"
