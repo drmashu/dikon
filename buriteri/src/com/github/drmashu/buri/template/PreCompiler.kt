@@ -105,6 +105,7 @@ public class PreCompiler {
         // クラス名
         writer.write("class $className(___writer___: Writer, req: HttpServletRequest, res: HttpServletResponse$param) : $typeName(___writer___, req, res) {\n")
 
+        writer.write("\tpublic override fun post() { get() }\n")
         //
         writer.write("\tpublic override fun get() {\n")
         val mode = Stack<Mode>()
