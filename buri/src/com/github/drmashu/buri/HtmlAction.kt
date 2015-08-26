@@ -1,11 +1,18 @@
 package com.github.drmashu.buri
 
 import java.io.Writer
+import javax.servlet.http.HttpServletRequest
+import javax.servlet.http.HttpServletResponse
 
 /**
- * Created by 貴博 on 2015/08/25.
+ * HTML用のレンダラクラス.
+ * @author NAGASAWA Takahiro<drmashu@gmail.com>
+ * @param ___writer___ 出力先ストリーム
  */
-public abstract class HtmlRenderer(___writer___: Writer): Renderer(___writer___){
+public abstract class HtmlAction(___writer___: Writer, req: HttpServletRequest, res: HttpServletResponse): Action(___writer___, req, res){
+    /**
+     * エンコード処理
+     */
     protected override fun encode(str :String) :String {
         var buf = StringBuffer()
         for(ch in str) {

@@ -9,20 +9,20 @@ import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 
 /**
- * Created by tnagasaw on 2015/08/07.
+ * @author NAGASAWA Takahiro<drmashu@gmail.com>
  */
 class DikonTest() {
     val dikon = Dikon(hashMapOf(
-            Pair("Test", Singleton(TestComponent::class)),
-            Pair("A", "A"),
+            Pair("Test", Singleton(Create(TestComponent::class))),
+            Pair("A", Holder("A")),
             Pair("B", Singleton(object : Factory<String> {
-                override fun get(dikon: Dikon): String? {
+                override fun get(dikon: Container): String? {
                     return "B"
                 }
             })),
             Pair("Test2", Singleton(Injection(TestComponent2::class))),
             Pair("Test3", object : Factory<TestComponent3> {
-                override fun get(dikon: Dikon): TestComponent3? {
+                override fun get(dikon: Container): TestComponent3? {
                     val result = TestComponent3()
                     result.setA(dikon["A"] as String)
                     return result
@@ -74,7 +74,7 @@ class DikonTest() {
         }
     }
     test fun testSingletonGet() {
-        val comp = Singleton(TestComponent::class).get(dikon)
+        val comp = Singleton(Create(TestComponent::class)).get(dikon)
         assert(comp is TestComponent)
         if (comp is TestComponent) {
             assertNull(comp.A)

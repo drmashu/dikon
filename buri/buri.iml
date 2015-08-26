@@ -11,6 +11,8 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="KotlinJavaRuntime" level="project" />
     <orderEntry type="library" scope="TEST" name="junit-4" level="application" />
+    <orderEntry type="module" module-name="dikon" />
+    <orderEntry type="library" exported="" name="jetty-servlet-9.3.2" level="project" />
     <orderEntry type="library" name="servlet-api" level="application" />
   </component>
 </module>

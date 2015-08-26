@@ -9,13 +9,13 @@ import kotlin.reflect.jvm.*
  * @author NAGASAWA Takahiro<drmashu@gmail.com>
  * @param objectMap 生成したいオブジェクトに名前を付けたMap
  */
-public class Dikon(val objectMap: Map<String, Any>) {
+public class Dikon(val objectMap: Map<String, Factory<*>>) : Container {
 
     /**
      * オブジェクトの取得
      * @param name
      */
-    public fun get(name:String) : Any? {
+    public override fun get(name:String) : Any? {
         val obj = objectMap[name]
 
         return injectProperties(
@@ -31,7 +31,6 @@ public class Dikon(val objectMap: Map<String, Any>) {
         )
     }
 
-    private val INJECT_CLASS = (inject::class).java
     /**
      * プロパティへの依存性注入
      * @param obj 対象のオブジェクト
@@ -96,6 +95,9 @@ public class Dikon(val objectMap: Map<String, Any>) {
     }
 }
 
+interface Container {
+    fun get(name: String) : Any?
+}
 /**
  * 注入アノテーション
  * @param name

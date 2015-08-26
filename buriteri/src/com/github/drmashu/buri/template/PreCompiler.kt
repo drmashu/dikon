@@ -31,7 +31,7 @@ public class PreCompiler {
 
         /** ファイル種別ごとのレンダラースーパークラス定義 */
         private val RENDERER_TYPE = mapOf(
-            Pair("html", "HtmlRenderer")
+            Pair("html", "HtmlAction")
         )
     }
     /**
@@ -99,13 +99,14 @@ public class PreCompiler {
         writer.write("package $packageName\n")
         writer.write("import java.util.*\n")
         writer.write("import java.io.Writer\n")
+        writer.write("import javax.servlet.http.*\n")
         writer.write("import com.github.drmashu.buri.Renderer\n")
 
         // クラス名
-        writer.write("class $className(___writer___: Writer$param) : $typeName(___writer___) {\n")
+        writer.write("class $className(___writer___: Writer, req: HttpServletRequest, res: HttpServletResponse$param) : $typeName(___writer___, req, res) {\n")
 
         //
-        writer.write("\tpublic override fun render() {\n")
+        writer.write("\tpublic override fun get() {\n")
         val mode = Stack<Mode>()
         // インサートモード
         val insert = object : Mode(writer) {
