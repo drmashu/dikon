@@ -2,7 +2,7 @@
 
 **BuriTeri** is "buri TEmplate precompiler".
 
-Buriのテンプレートエンジン、BuriTeriです。
+[Buri](../buri/README.md)のテンプレートエンジン、BuriTeriです。
 
 テンプレートはBuriのActionクラスに変換され、getメソッドとして実装されます。
 

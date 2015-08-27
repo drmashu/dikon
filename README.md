@@ -3,7 +3,7 @@
 **dikon** is "DI CONtainer written in Kotlin".
 **dikon** is Japanese "Daikon" radish.
 
-Kotlinの勉強を兼ねて、KotlinでDI コンテナを作っています。
+Kotlinの勉強を兼ねて、KotlinでDI コンテナを中心としたMVCフレームワークを作っています。
 
 ## 設定
 Dikonには設定ファイルというもの無く、オブジェクト名をキーにファクトリを割り当てるMapを作り、Dikonのコンストラクタに渡すことで設定します。
@@ -25,3 +25,9 @@ Dikonには設定ファイルというもの無く、オブジェクト名をキ
 
 ### Holder
 生成済みのオブジェクトを保持するだけで、生成はしません。
+
+## 今後の予定
+
++ [Buri](./buri/README.md)の強化
++ KotlinによるMicro ORM実装？
++ もしくはJPA準拠ORMのKotlin向けラッパーの作成？

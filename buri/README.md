@@ -6,10 +6,10 @@
 
 ぶり大根って言いたいだけでこの名前にしました。
 
-DIコンテナであるDikonに組み合わせる、Web用の(M)VVMフレームワークです。
+DIコンテナである[Dikon](../README.md)に組み合わせる、Web用の(M)VCフレームワークです。
 
 ## テンプレートエンジン
-テンプレートエンジンとして、BuriTeriを用意しています。
+テンプレートエンジンとして、[BuriTeri](../buriteri/README.md)を用意しています。
 
 BuriTeriについては別途。
 
@@ -31,3 +31,10 @@ BuriもDikon同様設定ファイルはなく、コンストラクタにMapを�
         Pair("/(?<id>[a-z0-9_@$]+)", Injection(Content::class)), // Contentにidをインジェクションする
         Pair("/content", Injection(content::class))
     ))
+
+## 今後の予定
+
++ FormDTOをView(HTML)とViewModel間でやりとりする仕組み
++ Ajax
++ RPC
++ バインディングを型安全にしたいけど、DIとの相性は悪いだろうなぁ
