@@ -77,7 +77,7 @@ public class PreCompiler {
         var charIdx = 1
 
         //一行目専用処理
-        var param: String? = null
+        var param: String?
         // 一行目の先頭が"@"で始まっていたら、このレンダラーのパラメータが指定されるということ
         if (firstLine != null && firstLine.startsWith("@")) {
             // カッコ内をとりだして、レンダラーメソッドのパラメータにする
