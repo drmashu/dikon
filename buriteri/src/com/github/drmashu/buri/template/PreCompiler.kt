@@ -100,13 +100,12 @@ public class PreCompiler {
         writer.write("import java.util.*\n")
         writer.write("import java.io.Writer\n")
         writer.write("import javax.servlet.http.*\n")
-        writer.write("import com.github.drmashu.buri.Renderer\n")
+        writer.write("import com.github.drmashu.buri.*\n")
 
         // クラス名
-        writer.write("class $className(___writer___: Writer, req: HttpServletRequest, res: HttpServletResponse$param) : $typeName(___writer___, req, res) {\n")
+        writer.write("class $className(writer: Writer, request: HttpServletRequest, response: HttpServletResponse$param) : $typeName(writer, request, response) {\n")
 
-        writer.write("\tpublic override fun post() { get() }\n")
-        //
+        // GETメソッドに実装
         writer.write("\tpublic override fun get() {\n")
         val mode = Stack<Mode>()
         // インサートモード
@@ -271,7 +270,7 @@ public class PreCompiler {
                         mode.pop()
                         // マジックモードから抜ける
                         mode.pop()
-                        writer.write("/* $lineIdx */___writer___.write(\"\"\"")
+                        writer.write("/* $lineIdx */writer.write(\"\"\"")
                     }
                 }
             }
@@ -301,11 +300,11 @@ public class PreCompiler {
                     block_start -> {
                         // インサート
                         mode.push(insert)
-                        writer.write("/* $lineIdx */___writer___.write(encode(\"\${")
+                        writer.write("/* $lineIdx */writer.write(encode(\"\${")
                     }
                     at -> {
                         // エスケープ
-                        writer.write("/* $lineIdx */___writer___.write(\"@\")\n")
+                        writer.write("/* $lineIdx */writer.write(\"@\")\n")
                         mode.pop()
                     }
                     lineCommentMark -> {
@@ -340,7 +339,7 @@ public class PreCompiler {
                     }
                     else -> {
                         if (inMode) {
-                            writer.write("/* $lineIdx */___writer___.write(\"\"\"")
+                            writer.write("/* $lineIdx */writer.write(\"\"\"")
                             inMode = false
                         }
                         writer.write(char)
@@ -350,7 +349,7 @@ public class PreCompiler {
         }
         mode.push(normal)
 
-        writer.write("/* $lineIdx */___writer___.write(\"\"\"")
+        writer.write("/* $lineIdx */writer.write(\"\"\"")
         while(reader.ready()) {
             var char = reader.read()
             if (char == -1) {

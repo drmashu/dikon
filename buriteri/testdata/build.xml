@@ -3,6 +3,6 @@
     <taskdef name="buriteri" classpath="${buriteri.classes}" classname="com.github.drmashu.buri.template.BuriTeriTask"/>
     <typedef resource="org/jetbrains/kotlin/ant/antlib.xml" classpath="${kotlin.lib}/kotlin-ant.jar"/>
     <target name="precompile">
-        <buriteri srcdir="./buriteri/testdata" destdir="./buri/gensrc" packagename="test"/>
+        <buriteri srcdir="${buriteri.srcdir}" destdir="${buriteri.destdir}" packagename="test"/>
     </target>
 </project>

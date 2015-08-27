@@ -6,7 +6,6 @@ import javax.servlet.http.HttpServlet
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 import java.util.regex.Pattern
-import kotlin.text.Regex
 
 /**
  * バインダークラス.
@@ -15,9 +14,14 @@ import kotlin.text.Regex
  */
 public class Binder(val dikon:Dikon) : HttpServlet() {
     companion object {
-        val groupNamePattern = Regex(""""\(\?<([a-zA-Z][a-zA-Z0-9])>""")
+        val groupNamePattern = Pattern.compile("\\(\\?<([a-zA-Z][a-zA-Z0-9]+)>")
     }
+    /** パスとアクションを結びつけるマップ */
     val pathMap: Map<String, List<Pair<NamedPattern, Factory<*>>>>
+
+    /**
+     * 初期化
+     */
     init {
         var result: MutableMap<String, MutableList<Pair<NamedPattern, Factory<*>>>> = HashMap()
         // "/"で始まるキーはビューまたはアクションとして扱う
@@ -26,7 +30,7 @@ public class Binder(val dikon:Dikon) : HttpServlet() {
             var key = entry.key
             val methodIdx = key.lastIndexOf(":")
             val methods = if (methodIdx > 0) {
-                val method = key.substring(+1)
+                val method = key.substring(methodIdx+1)
                 key = key.substring(0, methodIdx)
                 method.split(",")
             } else {
@@ -35,17 +39,11 @@ public class Binder(val dikon:Dikon) : HttpServlet() {
             val pattern = Pattern.compile(key)
             val names: MutableList<String> = arrayListOf()
             val patternStr = pattern.pattern()
-            var idx = 0
-            do {
-                val matched = groupNamePattern.match(patternStr, idx)
-                if (matched != null) {
-                    names.add(matched.groups[1]!!.value)
-                    idx = matched.range.end
-                } else {
-                    break
-                }
-            } while(idx < patternStr.length())
-            val value = Pair(NamedPattern(pattern, emptyArray()), entry.value)
+            val matcher = groupNamePattern.matcher(patternStr)
+            while (matcher.find()) {
+                names.add(matcher.group(1))
+            }
+            val value = Pair(NamedPattern(pattern, names.toTypedArray()), entry.value)
             for (method in methods) {
                 var list = result.get(method)
                 if (list == null) {
@@ -69,13 +67,16 @@ public class Binder(val dikon:Dikon) : HttpServlet() {
                 val pattern = item.first.pattern
                 val matcher = pattern.matcher(req.pathInfo)
                 if (matcher.matches()) {
-                    val paramMap:MutableMap<String, Factory<*>> = hashMapOf(
-                            Pair("_request", Holder(req)),
-                            Pair("_response", Holder(res))
+                    val paramMap: MutableMap<String, Factory<*>> = hashMapOf(
+                            Pair("request", Holder(req)),
+                            Pair("response", Holder(res)),
+                            Pair("writer", Holder(res.writer))
                     )
                     for(name in item.first.names) {
                         paramMap.put(name, Holder(matcher.group(name)))
                     }
+                    // デフォルトのコンテントタイプをhtmlにする
+                    res.contentType = "text/html"
                     val action = item.second.get(ParamContainer(dikon, paramMap))
                     if (action is Action) {
                         when(req.method) {
@@ -85,10 +86,12 @@ public class Binder(val dikon:Dikon) : HttpServlet() {
                             "DELETE"    -> action.delete()
                         }
                     }
-                    break
+                    return
                 }
             }
         }
+        // TODO 静的コンテンツを探して返す
+
     }
 }
 
@@ -104,7 +107,7 @@ public class ParamContainer(val dikon: Dikon, val params: Map<String, Factory<*>
     override fun get(name: String): Any? {
         val result = params[name]
         if (result != null) {
-            return result
+            return result.get(dikon)
         }
         return dikon[name]
     }

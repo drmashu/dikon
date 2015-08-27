@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="mockito-all-1.9.1-20110911">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/buri/lib/mockito-all-1.9.1-20110911.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/buri/lib/mockito-all-1.9.1-20110911.jar!/" />
+    </SOURCES>
+  </library>
+</component>

@@ -5,9 +5,13 @@ import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
 /**
- * レンダラーのスーパークラス
+ * アクションのスーパークラス.
+ * アクションはコンストラクタインジェクションをされるので、
+ * 継承するクラスでwriter、request、responseを使用したい場合は、
+ * コンストラクタ引数の名称を変えてはならない。
+ * @author NAGASAWA Takahiro<drmashu@gmail.com>
  */
-public abstract class Action(val ___writer___: Writer, val request: HttpServletRequest, val response: HttpServletResponse) {
+public abstract class Action(val writer: Writer, val request: HttpServletRequest, val response: HttpServletResponse) {
     /**
      * GET Methodに該当する処理.
      */
@@ -15,7 +19,7 @@ public abstract class Action(val ___writer___: Writer, val request: HttpServletR
     /**
      * POST Methodに該当する処理.
      */
-    public open fun post() {}
+    public open fun post() { get() }
     /**
      * PUT Methodに該当する処理.
      */

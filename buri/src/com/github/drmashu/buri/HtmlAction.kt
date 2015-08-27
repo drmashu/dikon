@@ -6,10 +6,13 @@ import javax.servlet.http.HttpServletResponse
 
 /**
  * HTML用のレンダラクラス.
+ * アクションはコンストラクタインジェクションをされるので、
+ * 継承するクラスでwriter、request、responseを使用したい場合は、
+ * コンストラクタ引数の名称を変えてはならない。
  * @author NAGASAWA Takahiro<drmashu@gmail.com>
- * @param ___writer___ 出力先ストリーム
  */
-public abstract class HtmlAction(___writer___: Writer, req: HttpServletRequest, res: HttpServletResponse): Action(___writer___, req, res){
+public abstract class HtmlAction(writer: Writer, request: HttpServletRequest, response: HttpServletResponse): Action(writer, request, response){
+
     /**
      * エンコード処理
      */

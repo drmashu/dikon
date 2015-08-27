@@ -101,6 +101,13 @@ class DikonTest() {
             assertEquals("A", comp.a)
         }
     }
+    test fun testInjectionMenyType() {
+        val comp = Injection(TestComponent2_::class).get(dikon)
+        if (comp is TestComponent2_) {
+            assertEquals("A", comp.A)
+            assert(comp.Test3 is TestComponent3)
+        }
+    }
 }
 
 data class TestComponent {
@@ -113,3 +120,6 @@ data class TestComponent {
     }
 }
 data class TestComponent2(@inject("A") val B: String, val A: String = "X")
+class TestComponent2_(val A: String, val Test3: TestComponent3_) {
+
+}

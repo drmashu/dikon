@@ -1,12 +1,15 @@
 import com.github.drmashu.buri.Buri
-import com.github.drmashu.dikon.Factory
 import com.github.drmashu.dikon.Holder
+import com.github.drmashu.dikon.Injection
 
 /**
- * @author NAGASAWA Takahiro<drmashu@gmail.com>
+ * Created by tnagasaw on 2015/08/27.
  */
-fun main(vararg args:String) {
-    Buri(mapOf(
-            Pair("/", Holder("index.html"))
-    )).start(8080)
+
+fun main(vararg ags:String) {
+    val buri = Buri(mapOf(
+            Pair("/", Injection(test.template::class)),
+            Pair("list", Holder(listOf("aa", "bb", "cc")))
+    ))
+    buri.start(8080)
 }
