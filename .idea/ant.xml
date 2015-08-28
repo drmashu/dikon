@@ -11,7 +11,7 @@
         <property name="kotlin.lib" value="C:\Program Files (x86)\JetBrains\IntelliJ IDEA 142.4083.2\plugins\Kotlin\kotlinc\lib" />
         <property name="buriteri.classes" value="$ProjectFileDir$\buriteri\out\classes" />
         <property name="buriteri.srcdir" value="$ProjectFileDir$\buriteri\testdata" />
-        <property name="buriteri.destdir" value="$ProjectFileDir$\buri\gensrc" />
+        <property name="buriteri.destdir" value="$ProjectFileDir$\buri_sample\gensrc" />
       </properties>
     </buildFile>
   </component>

@@ -92,7 +92,7 @@ drmashu@@gmail.com
                 + "import com.github.drmashu.buri.*\n"
                 + "class test(writer: Writer, request: HttpServletRequest, response: HttpServletResponse, val list: List<String>) : HtmlAction(writer, request, response) {\n"
                 + "\tpublic override fun get() {\n"
-                + "/* 1 */writer.write(\"\"\"<!html>\n"
+                + "/* 1 */writer.write(\"\"\"<!DOCTYPE html>\n"
                 + "<!-- -->\n"
                 + "<html>\n"
                 + "<head></head>\n"

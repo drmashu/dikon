@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletResponse
  * コンストラクタ引数の名称を変えてはならない。
  * @author NAGASAWA Takahiro<drmashu@gmail.com>
  */
-public abstract class HtmlAction(writer: Writer, request: HttpServletRequest, response: HttpServletResponse): Action(writer, request, response){
+public abstract class HtmlAction(request: HttpServletRequest, response: HttpServletResponse): Action(request, response){
 
     /**
      * エンコード処理

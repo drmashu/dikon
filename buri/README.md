@@ -31,6 +31,22 @@ BuriもDikon同様設定ファイルはなく、コンストラクタにMapを�
         Pair("/(?<id>[a-z0-9_@$]+)", Injection(Content::class)), // Contentにidをインジェクションする
         Pair("/content", Injection(content::class))
     ))
+    
+リクエストのメソッドごとにアクションを切り替えたい場合は
+
+    Buri(mapOf(
+        Pair("/xxx:GET", Injection(GetXXX::class)), // GETメソッド
+        Pair("/xxx:POST", Injection(PostXXX::class)), // POSTメソッド
+        Pair("/xxx:PUT", Injection(PutXXX::class)), // PUTメソッド
+        Pair("/xxx:DELETE", Injection(DeleteXXX::class)), // DELETEメソッド
+        Pair("/content:POST,PUT", Injection(content::class)) // POSTまたはPUTメソッド
+    ))
+
+のように、パスの後ろに「:」を付加し、カンマ区切りで対応させたいメソッド名を指定してください。
+
+### アクション
+
+アクションには
 
 ## 今後の予定
 

@@ -1,6 +1,7 @@
 package com.github.drmashu.buri
 
 import com.github.drmashu.dikon.Dikon
+import com.github.drmashu.dikon.Factory
 import com.github.drmashu.dikon.Holder
 import com.github.drmashu.dikon.Injection
 import java.io.Writer
@@ -22,10 +23,13 @@ import kotlin.reflect.jvm.java
  */
 public class BinderTest {
     test fun testAction1() {
-        val binder = Binder(Dikon(mapOf(
-                Pair("/test", Injection(TestAction::class)),
-                Pair("test", Holder("TEST"))
-        )))
+        val binder = object:Buri() {
+            override val config: Map<String, Factory<*>>
+                get() = mapOf(
+                        Pair("/test", Injection(TestAction::class)),
+                        Pair("test", Holder("TEST"))
+                )
+        }
         val req = mock(HttpServletRequest::class.java)
         `when`(req.pathInfo).thenReturn("/test")
         `when`(req.method).thenReturn("GET")
@@ -36,9 +40,12 @@ public class BinderTest {
         assertEquals("TEST", resultWriter.buffer.toString())
     }
     test fun testAction2() {
-        val binder = Binder(Dikon(mapOf(
-                Pair("/test/(?<test>[A-Za-z]+)", Injection(TestAction::class))
-        )))
+        val binder = object:Buri() {
+            override val config: Map<String, Factory<*>>
+                get() = mapOf(
+                        Pair("/test/(?<test>[A-Za-z]+)", Injection(TestAction::class))
+                )
+        }
         val req = mock(HttpServletRequest::class.java)
         `when`(req.pathInfo).thenReturn("/test/TEST")
         `when`(req.method).thenReturn("POST")
@@ -49,9 +56,12 @@ public class BinderTest {
         assertEquals("TEST", resultWriter.buffer.toString())
     }
     test fun testAction3() {
-        val binder = Binder(Dikon(mapOf(
-                Pair("/test/(?<test>[A-Za-z]+)", Injection(TestAction::class))
-        )))
+        val binder = object:Buri() {
+            override val config: Map<String, Factory<*>>
+                get() = mapOf(
+                        Pair("/test/(?<test>[A-Za-z]+)", Injection(TestAction::class))
+                )
+        }
         val req = mock(HttpServletRequest::class.java)
         `when`(req.pathInfo).thenReturn("/test/TEST/Test")
         `when`(req.method).thenReturn("GET")
@@ -62,9 +72,12 @@ public class BinderTest {
         assertEquals("", resultWriter.buffer.toString())
     }
     test fun testAction4() {
-        val binder = Binder(Dikon(mapOf(
-                Pair("/test/(?<test>[A-Za-z]+):POST", Injection(TestAction::class))
-        )))
+        val binder = object:Buri() {
+            override val config: Map<String, Factory<*>>
+                get() = mapOf(
+                        Pair("/test/(?<test>[A-Za-z]+):POST", Injection(TestAction::class))
+                )
+        }
         val req = mock(HttpServletRequest::class.java)
         `when`(req.pathInfo).thenReturn("/test/TEST")
         `when`(req.method).thenReturn("GET")
@@ -75,9 +88,12 @@ public class BinderTest {
         assertEquals("", resultWriter.buffer.toString())
     }
     test fun testAction5() {
-        val binder = Binder(Dikon(mapOf(
-                Pair("/test/(?<test>[A-Za-z]+):POST", Injection(TestAction::class))
-        )))
+        val binder = object:Buri() {
+            override val config: Map<String, Factory<*>>
+                get() = mapOf(
+                        Pair("/test/(?<test>[A-Za-z]+):POST", Injection(TestAction::class))
+                )
+        }
         val req = mock(HttpServletRequest::class.java)
         `when`(req.pathInfo).thenReturn("/test/TEST")
         `when`(req.method).thenReturn("POST")
@@ -88,9 +104,12 @@ public class BinderTest {
         assertEquals("TEST", resultWriter.buffer.toString())
     }
     test fun testAction6() {
-        val binder = Binder(Dikon(mapOf(
-                Pair("/test/(?<test>[A-Za-z]+):POST,DELETE", Injection(TestAction::class))
-        )))
+        val binder = object:Buri() {
+            override val config: Map<String, Factory<*>>
+                get() = mapOf(
+                        Pair("/test/(?<test>[A-Za-z]+):POST,DELETE", Injection(TestAction::class))
+                )
+        }
         val req = mock(HttpServletRequest::class.java)
         `when`(req.pathInfo).thenReturn("/test/TEST")
         `when`(req.method).thenReturn("DELETE")
@@ -101,7 +120,7 @@ public class BinderTest {
         assertEquals("TESTTEST", resultWriter.buffer.toString())
     }
 }
-class TestAction(writer: Writer, request: HttpServletRequest, response: HttpServletResponse, val test: String): HtmlAction(writer, request, response) {
+class TestAction(request: HttpServletRequest, response: HttpServletResponse, val test: String): HtmlAction(request, response) {
     override fun get() {
        writer.write(test)
 

@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/buri/buri.iml" filepath="$PROJECT_DIR$/buri/buri.iml" group="dikon suite" />
+      <module fileurl="file://$PROJECT_DIR$/buriSample/buriSample.iml" filepath="$PROJECT_DIR$/buriSample/buriSample.iml" group="dikon suite" />
       <module fileurl="file://$PROJECT_DIR$/buriteri/buriteri.iml" filepath="$PROJECT_DIR$/buriteri/buriteri.iml" group="dikon suite" />
       <module fileurl="file://$PROJECT_DIR$/dikon.iml" filepath="$PROJECT_DIR$/dikon.iml" group="dikon suite" />
       <module fileurl="file://$PROJECT_DIR$/oden/oden.iml" filepath="$PROJECT_DIR$/oden/oden.iml" group="dikon suite" />

@@ -17,13 +17,15 @@ public class HtmlActionTest {
     test fun testEncode() {
         val req = mock(HttpServletRequest::class.java)
         val res = mock(HttpServletResponse::class.java)
-        val writer = StringWriter()
-        var action = object : HtmlAction(writer, req, res) {
+        val resultWriter = StringWriter()
+        `when`(res.writer).thenReturn(PrintWriter(resultWriter))
+
+        var action = object : HtmlAction(req, res) {
             override fun get() {
                 writer.write(encode("""<tag path="aaa&bbb" ccc='ccc'/>"""))
             }
         }
         action.get()
-        assertEquals("&lt;tag path=&quot;aaa&amp;bbb&quot; ccc=&#39;ccc&#39;/&gt;", writer.toString())
+        assertEquals("&lt;tag path=&quot;aaa&amp;bbb&quot; ccc=&#39;ccc&#39;/&gt;", resultWriter.toString())
     }
 }
