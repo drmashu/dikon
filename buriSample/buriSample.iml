@@ -28,5 +28,6 @@
     <orderEntry type="library" name="KotlinJavaRuntime" level="project" />
     <orderEntry type="module" module-name="buri" exported="" />
     <orderEntry type="module" module-name="dikon" exported="" />
+    <orderEntry type="library" name="junit-4" level="application" />
   </component>
 </module>
