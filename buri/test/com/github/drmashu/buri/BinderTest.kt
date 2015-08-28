@@ -16,7 +16,7 @@ import org.junit.After as after
 import org.mockito.Mockito.*
 import java.io.PrintWriter
 import java.io.StringWriter
-import kotlin.reflect.jvm.java
+//import kotlin.reflect.jvm.java
 
 /**
  * @author NAGASAWA Takahiro<drmashu@gmail.com>

@@ -3,15 +3,15 @@
   <component name="AntConfiguration">
     <buildFile url="file://$PROJECT_DIR$/buriteri/testdata/build.xml">
       <additionalClassPath>
-        <entry path="file://$PROJECT_DIR$/buriteri/out/classes" />
         <entry path="file://$APPLICATION_HOME_DIR$/lib/kotlin-reflect.jar" />
         <entry path="file://$APPLICATION_HOME_DIR$/lib/kotlin-runtime.jar" />
+        <entry path="file://$PROJECT_DIR$/buriteri/target/classes" />
       </additionalClassPath>
       <properties>
         <property name="kotlin.lib" value="$APPLICATION_HOME_DIR$/plugins/Kotlin/kotlinc/lib/kotlin-ant.jarlib/junit-4.12.jar" />
-        <property name="buriteri.classes" value="$ProjectFileDir$\buriteri\out\classes" />
-        <property name="buriteri.srcdir" value="$ProjectFileDir$\buriteri\testdata" />
-        <property name="buriteri.destdir" value="$ProjectFileDir$\buriSample\gensrc" />
+        <property name="buriteri.srcdir" value="$ProjectFileDir$/buriteri/testdata" />
+        <property name="buriteri.destdir" value="$ProjectFileDir$/buriSample/gensrc" />
+        <property name="buriteri.classes" value="$ProjectFileDir$/buriteri/target/classes" />
       </properties>
     </buildFile>
   </component>

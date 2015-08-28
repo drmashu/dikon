@@ -103,7 +103,7 @@ public class PreCompiler {
         writer.write("import com.github.drmashu.buri.*\n")
 
         // クラス名
-        writer.write("class $className(writer: Writer, request: HttpServletRequest, response: HttpServletResponse$param) : $typeName(writer, request, response) {\n")
+        writer.write("class $className(request: HttpServletRequest, response: HttpServletResponse$param) : $typeName(request, response) {\n")
 
         // GETメソッドに実装
         writer.write("\tpublic override fun get() {\n")
