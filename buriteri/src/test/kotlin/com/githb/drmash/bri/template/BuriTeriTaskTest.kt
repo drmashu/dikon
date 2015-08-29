@@ -1,4 +1,4 @@
-package com.github.drmashu.buri.template
+package com.githb.drmash.bri.template
 
 import org.apache.tools.ant.Main
 

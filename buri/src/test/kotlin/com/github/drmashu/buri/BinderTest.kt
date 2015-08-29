@@ -1,9 +1,12 @@
 package com.github.drmashu.buri
 
+import com.github.drmashu.buri.Buri
+import com.github.drmashu.buri.HtmlAction
 import com.github.drmashu.dikon.Dikon
 import com.github.drmashu.dikon.Factory
 import com.github.drmashu.dikon.Holder
 import com.github.drmashu.dikon.Injection
+import org.junit.Test
 import java.io.Writer
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
@@ -22,8 +25,8 @@ import java.io.StringWriter
  * @author NAGASAWA Takahiro<drmashu@gmail.com>
  */
 public class BinderTest {
-    test fun testAction1() {
-        val binder = object:Buri() {
+    Test fun testAction1() {
+        val binder = object: Buri() {
             override val config: Map<String, Factory<*>>
                 get() = mapOf(
                         Pair("/test", Injection(TestAction::class)),
@@ -39,8 +42,8 @@ public class BinderTest {
         binder.service(req, res)
         assertEquals("TEST", resultWriter.buffer.toString())
     }
-    test fun testAction2() {
-        val binder = object:Buri() {
+    Test fun testAction2() {
+        val binder = object: Buri() {
             override val config: Map<String, Factory<*>>
                 get() = mapOf(
                         Pair("/test/(?<test>[A-Za-z]+)", Injection(TestAction::class))
@@ -55,8 +58,8 @@ public class BinderTest {
         binder.service(req, res)
         assertEquals("TEST", resultWriter.buffer.toString())
     }
-    test fun testAction3() {
-        val binder = object:Buri() {
+    Test fun testAction3() {
+        val binder = object: Buri() {
             override val config: Map<String, Factory<*>>
                 get() = mapOf(
                         Pair("/test/(?<test>[A-Za-z]+)", Injection(TestAction::class))
@@ -71,8 +74,8 @@ public class BinderTest {
         binder.service(req, res)
         assertEquals("", resultWriter.buffer.toString())
     }
-    test fun testAction4() {
-        val binder = object:Buri() {
+    Test fun testAction4() {
+        val binder = object: Buri() {
             override val config: Map<String, Factory<*>>
                 get() = mapOf(
                         Pair("/test/(?<test>[A-Za-z]+):POST", Injection(TestAction::class))
@@ -87,8 +90,8 @@ public class BinderTest {
         binder.service(req, res)
         assertEquals("", resultWriter.buffer.toString())
     }
-    test fun testAction5() {
-        val binder = object:Buri() {
+    Test fun testAction5() {
+        val binder = object: Buri() {
             override val config: Map<String, Factory<*>>
                 get() = mapOf(
                         Pair("/test/(?<test>[A-Za-z]+):POST", Injection(TestAction::class))
@@ -103,8 +106,8 @@ public class BinderTest {
         binder.service(req, res)
         assertEquals("TEST", resultWriter.buffer.toString())
     }
-    test fun testAction6() {
-        val binder = object:Buri() {
+    Test fun testAction6() {
+        val binder = object: Buri() {
             override val config: Map<String, Factory<*>>
                 get() = mapOf(
                         Pair("/test/(?<test>[A-Za-z]+):POST,DELETE", Injection(TestAction::class))

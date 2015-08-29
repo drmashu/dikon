@@ -1,5 +1,7 @@
-package com.github.drmashu.buri.template
+package com.githb.drmash.bri.template
 
+import com.github.drmashu.buri.template.PreCompiler
+import org.junit.Test
 import java.io.BufferedReader
 import java.io.LineNumberReader
 import java.io.StringReader
@@ -18,7 +20,7 @@ public class PreCompilerTest {
     /**
      *
      */
-    test fun testPreCompileEmpty() {
+    Test fun testPreCompileEmpty() {
         val compiler = PreCompiler()
         val reader = StringReader("""@()
 """)
@@ -49,7 +51,7 @@ public class PreCompilerTest {
             line2 = reader2.readLine()
         }
     }
-    test fun testPreCompile() {
+    Test fun testPreCompile() {
         val compiler = PreCompiler()
         val reader = StringReader("""@(val list: List<String>)
 <!html>

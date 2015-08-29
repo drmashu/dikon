@@ -22,12 +22,19 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="true" />
+        <module name="buri" />
+        <module name="buriSample" />
         <module name="buriteri" />
+        <module name="dikon" />
+        <module name="oden" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="buri" target="1.5" />
+      <module name="buriSample" target="1.5" />
       <module name="buriteri" target="1.5" />
+      <module name="dikon" target="1.5" />
+      <module name="oden" target="1.5" />
     </bytecodeTargetLevel>
   </component>
 </project>

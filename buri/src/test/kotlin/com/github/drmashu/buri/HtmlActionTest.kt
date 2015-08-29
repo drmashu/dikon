@@ -1,5 +1,7 @@
 package com.github.drmashu.buri
 
+import com.github.drmashu.buri.HtmlAction
+import org.junit.Test
 import java.io.*
 import org.junit.Test as test
 import org.junit.Before as before
@@ -14,7 +16,7 @@ import kotlin.test.assertEquals
  * Created by tnagasaw on 2015/08/27.
  */
 public class HtmlActionTest {
-    test fun testEncode() {
+    Test fun testEncode() {
         val req = mock(HttpServletRequest::class.java)
         val res = mock(HttpServletResponse::class.java)
         val resultWriter = StringWriter()
