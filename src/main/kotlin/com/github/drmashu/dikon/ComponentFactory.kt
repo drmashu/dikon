@@ -1,13 +1,12 @@
 package com.github.drmashu.dikon
 
-import kotlin.reflect.KClass
-import kotlin.reflect.primaryConstructor
+import kotlin.reflect.*
 
 /**
  * オブジェクトの生成方法を定義するためのインターフェイス
  * @author NAGASAWA Takahiro<drmashu@gmail.com>
  */
-public interface Factory<T> {
+public interface Factory<T: Any> {
     /**
      * インスタンスの取得
      * @return インスタンス
@@ -19,7 +18,7 @@ public interface Factory<T> {
  * シングルトンを実装するファクトリ
  * @author NAGASAWA Takahiro<drmashu@gmail.com>
  */
-public open class Singleton<T>(val factory: Factory<T>) : Factory<T> {
+public open class Singleton<T: Any>(val factory: Factory<T>) : Factory<T> {
 
     /**
      * インスタンス
@@ -44,7 +43,7 @@ public open class Singleton<T>(val factory: Factory<T>) : Factory<T> {
  * @author NAGASAWA Takahiro<drmashu@gmail.com>
  * @param kClass 生成対象のクラス
  */
-public open class Create<T>(val kClass: KClass<T>) : Factory<T> {
+public open class Create<T: Any>(val kClass: KClass<T>) : Factory<T> {
     override fun get(dikon: Container): T? {
         return kClass.create()
     }
@@ -58,17 +57,17 @@ public open class Create<T>(val kClass: KClass<T>) : Factory<T> {
  * @author NAGASAWA Takahiro<drmashu@gmail.com>
  * @param kClass 生成対象のクラス
  */
-public open class Injection<T>(val kClass: KClass<T>) : Factory<T> {
+public open class Injection<T: Any>(val kClass: KClass<T>) : Factory<T> {
 
     /**
      * インスタンスの取得
      * @return インスタンス
      */
     public override fun get(dikon: Container): T? {
-        val constructor = kClass.primaryConstructor;
+        val constructor = kClass.primaryConstructor
         if (constructor != null) {
             val params = constructor.parameters
-            var paramArray = Array<Any?>(params.size(), { null });
+            var paramArray = Array<Any?>(params.size(), { null })
             for (idx in params.indices) {
                 val param = params[idx]
                 var name = param.name
@@ -86,7 +85,7 @@ public open class Injection<T>(val kClass: KClass<T>) : Factory<T> {
                     }
                 }
             }
-            return constructor.call(*paramArray)
+            return constructor.call(*paramArray) as T
         }
         return null
     }
@@ -96,7 +95,7 @@ public open class Injection<T>(val kClass: KClass<T>) : Factory<T> {
  * オブジェクトを保持し、返すだけのクラス.
  * @author NAGASAWA Takahiro<drmashu@gmail.com>
  */
-public class Holder<T>(val value: T) : Factory<T> {
+public class Holder<T: Any>(val value: T) : Factory<T> {
     override fun get(dikon: Container): T? {
         return value
     }

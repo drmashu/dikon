@@ -23,8 +23,6 @@ public class Dikon(val objectMap: Map<String, Factory<*>>) : Container {
                 null
             } else if (obj is Factory<*>) {
                 obj.get(this)
-            } else if (obj is KClass<*>) {
-                obj.create()
             } else {
                 obj
             }
@@ -107,13 +105,13 @@ annotation class inject(val name: String = "")
 /**
  * デフォルトコンストラクタを探して呼び出す
  */
-public fun <T> KClass<T>.create(): T? {
+public fun <T: Any> KClass<T>.create(): T? {
     var instance :T? = null
     for (it in this.constructors) {
         // デフォルトコンストラクタを探して呼び出す
-        val params = it.parameters;
+        val params = it.parameters
         if (params.size() == 0) {
-            instance = it.call()
+            instance = it.call() as T
             break
         }
     }
