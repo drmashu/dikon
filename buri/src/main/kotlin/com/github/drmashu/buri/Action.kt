@@ -60,4 +60,7 @@ public abstract class Action(val request: HttpServletRequest, val response: Http
         }
         ___buri!!.callAction(factory!!, paramMap, request)
     }
+    protected fun responseByJson(result: Any) {
+
+    }
 }

@@ -26,6 +26,8 @@
         <module name="buriSample" />
         <module name="buriteri" />
         <module name="dikon" />
+        <module name="jkon" />
+        <module name="kson" />
         <module name="oden" />
       </profile>
     </annotationProcessing>
@@ -34,6 +36,8 @@
       <module name="buriSample" target="1.5" />
       <module name="buriteri" target="1.5" />
       <module name="dikon" target="1.5" />
+      <module name="jkon" target="1.5" />
+      <module name="kson" target="1.5" />
       <module name="oden" target="1.5" />
     </bytecodeTargetLevel>
   </component>

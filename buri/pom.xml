@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.github.drmashu.dikon</groupId>
+    <groupId>com.github.drmashu</groupId>
     <artifactId>buri</artifactId>
     <version>0.1-SNAPSHOT</version>
     <repositories>
@@ -63,8 +63,13 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>com.github.drmashu.dikon</groupId>
+            <groupId>com.github.drmashu</groupId>
             <artifactId>dikon</artifactId>
+            <version>0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.drmashu</groupId>
+            <artifactId>jkon</artifactId>
             <version>0.1-SNAPSHOT</version>
         </dependency>
     </dependencies>
