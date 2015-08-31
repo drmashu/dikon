@@ -1,5 +1,6 @@
 package com.github.drmashu.jkon
 
+import jdk.nashorn.api.scripting.ScriptObjectMirror
 import java.lang.reflect.Method
 import java.util.*
 import java.util.Set
@@ -12,19 +13,29 @@ import kotlin.reflect.primaryConstructor
  */
 public class KtoJ {
     public fun convert(target: String): Map<String, Any> {
+        val obj = parse(target)
+        return jsonToMap(obj)
+    }
+
+    private fun parse(target: String): ScriptObjectMirror {
         val manager = ScriptEngineManager();
         val engine = manager.getEngineByName("JavaScript");
         val obj = engine.eval("($target)");
-        return jsonToMap(obj)
+        return obj as ScriptObjectMirror
     }
 
     public fun convert<T:Any>(target: String, kClass: KClass<T>): T {
         val construtor = kClass.primaryConstructor
-        val paramList = ArrayList<Any>()
+        val params = construtor!!.parameters
+        var paramArray = Array<Any?>(params.size(), { null })
 
-        for (param in construtor!!.parameters) {
+        val obj = parse(target)
+        for (idx in params.indices) {
+            val param = params[idx]
+            val value = obj.get(param.name)
+            paramArray[idx] = value
         }
-        return construtor.call(*paramList.toArray())
+        return construtor.call(*paramArray)
     }
 
     fun jsonToMap(obj: Any): Map<String, Any> {
