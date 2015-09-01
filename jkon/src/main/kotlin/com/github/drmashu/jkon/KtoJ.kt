@@ -6,6 +6,7 @@ import java.util.*
 import java.util.Set
 import javax.script.ScriptEngineManager
 import kotlin.reflect.KClass
+import kotlin.reflect.jvm.javaType
 import kotlin.reflect.primaryConstructor
 
 /**
@@ -25,31 +26,36 @@ public class KtoJ {
     }
 
     public fun convert<T:Any>(target: String, kClass: KClass<T>): T {
+        val obj = parse(target)
+
+        return jsonToObject(obj, kClass)
+    }
+
+    private fun <T : Any> jsonToObject(obj: ScriptObjectMirror, kClass: KClass<T>): T {
         val construtor = kClass.primaryConstructor
         val params = construtor!!.parameters
         var paramArray = Array<Any?>(params.size(), { null })
-
-        val obj = parse(target)
         for (idx in params.indices) {
             val param = params[idx]
             val value = obj.get(param.name)
-            paramArray[idx] = value
+            if (value is ScriptObjectMirror) {
+                paramArray[idx] = jsonToObject(value, if(param.type.javaType is Class<*>) {(param.type.javaType as Class<*>).kotlin }else{ param.type.javaType.javaClass.kotlin })
+            } else {
+                paramArray[idx] = value
+            }
         }
         return construtor.call(*paramArray)
     }
 
-    fun jsonToMap(obj: Any): Map<String, Any> {
-        val scriptObjectClass = Class.forName("jdk.nashorn.api.scripting.ScriptObjectMirror")
-        val keys = (obj.javaClass.getMethod("keySet").invoke(obj) as Set<*>).toArray()
-        // get メソッドを取得
-        val method_get = obj.javaClass.getMethod("get", Class.forName("java.lang.Object"))
+    fun jsonToMap(obj: ScriptObjectMirror): Map<String, Any> {
+        val keys = obj.keySet().toTypedArray()
         val map = HashMap<String, Any>()
         for (key in keys) {
-            val value = method_get.invoke(obj, key)
-            if (scriptObjectClass.isInstance(value)) {
+            val value = obj.get(key)
+            if (value is ScriptObjectMirror) {
                 map.put(key.toString(), jsonToMap(value))
             } else {
-                map.put(key.toString(), value)
+                map.put(key.toString(), value!!)
             }
         }
         return map;
