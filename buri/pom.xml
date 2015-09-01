@@ -72,5 +72,10 @@
             <artifactId>jkon</artifactId>
             <version>0.1-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>com.github.salomonbrys.kotson</groupId>
+            <artifactId>kotson</artifactId>
+            <version>1.2.0</version>
+        </dependency>
     </dependencies>
 </project>
