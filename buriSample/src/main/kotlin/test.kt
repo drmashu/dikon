@@ -1,4 +1,4 @@
-import com.github.drmashu.buri.BuriRunner
+import io.github.drmashu.buri.BuriRunner
 
 /**
  * Created by tnagasaw on 2015/08/27.

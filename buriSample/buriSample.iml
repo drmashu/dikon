@@ -37,13 +37,17 @@
     <orderEntry type="library" name="Maven: org.eclipse.jetty.http2:http2-server:9.3.2.v20150730" level="project" />
     <orderEntry type="library" name="Maven: org.eclipse.jetty.http2:http2-common:9.3.2.v20150730" level="project" />
     <orderEntry type="library" name="Maven: org.eclipse.jetty.http2:http2-hpack:9.3.2.v20150730" level="project" />
-    <orderEntry type="library" name="Maven: org.eclipse.jetty:jetty-util:9.3.2.v20150730" level="project" />
     <orderEntry type="library" name="Maven: org.eclipse.jetty:jetty-server:9.3.2.v20150730" level="project" />
-    <orderEntry type="library" name="Maven: org.eclipse.jetty:jetty-http:9.3.2.v20150730" level="project" />
     <orderEntry type="library" name="Maven: org.eclipse.jetty:jetty-io:9.3.2.v20150730" level="project" />
+    <orderEntry type="library" name="Maven: org.eclipse.jetty.websocket:websocket-server:9.3.2.v20150730" level="project" />
+    <orderEntry type="library" name="Maven: org.eclipse.jetty.websocket:websocket-common:9.3.2.v20150730" level="project" />
+    <orderEntry type="library" name="Maven: org.eclipse.jetty.websocket:websocket-api:9.3.2.v20150730" level="project" />
+    <orderEntry type="library" name="Maven: org.eclipse.jetty:jetty-util:9.3.2.v20150730" level="project" />
+    <orderEntry type="library" name="Maven: org.eclipse.jetty.websocket:websocket-client:9.3.2.v20150730" level="project" />
+    <orderEntry type="library" name="Maven: org.eclipse.jetty.websocket:websocket-servlet:9.3.2.v20150730" level="project" />
+    <orderEntry type="library" name="Maven: org.eclipse.jetty:jetty-http:9.3.2.v20150730" level="project" />
     <orderEntry type="library" name="Maven: javax.servlet:javax.servlet-api:3.1.0" level="project" />
     <orderEntry type="module" module-name="dikon" />
-    <orderEntry type="module" module-name="jkon" />
     <orderEntry type="library" name="Maven: com.github.salomonbrys.kotson:kotson:1.2.0" level="project" />
     <orderEntry type="library" name="Maven: org.jetbrains.kotlin:kotlin-stdlib:0.12.200" level="project" />
     <orderEntry type="library" name="Maven: org.jetbrains.kotlin:kotlin-runtime:0.12.200" level="project" />

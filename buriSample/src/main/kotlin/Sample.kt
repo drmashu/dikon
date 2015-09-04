@@ -1,7 +1,7 @@
-import com.github.drmashu.buri.Buri
-import com.github.drmashu.dikon.Factory
-import com.github.drmashu.dikon.Holder
-import com.github.drmashu.dikon.Injection
+import io.github.drmashu.buri.Buri
+import io.github.drmashu.dikon.Factory
+import io.github.drmashu.dikon.Holder
+import io.github.drmashu.dikon.Injection
 import test.template
 
 /**

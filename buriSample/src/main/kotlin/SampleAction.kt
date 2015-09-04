@@ -1,4 +1,4 @@
-import com.github.drmashu.buri.HtmlAction
+import io.github.drmashu.buri.HtmlAction
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 

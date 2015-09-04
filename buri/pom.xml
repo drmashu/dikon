@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.github.drmashu</groupId>
+    <groupId>io.github.drmashu</groupId>
     <artifactId>buri</artifactId>
     <version>0.1-SNAPSHOT</version>
     <repositories>
@@ -46,6 +46,11 @@
             <version>9.3.2.v20150730</version>
         </dependency>
         <dependency>
+            <groupId>org.eclipse.jetty.websocket</groupId>
+            <artifactId>websocket-server</artifactId>
+            <version>9.3.2.v20150730</version>
+        </dependency>
+        <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
             <version>3.1.0</version>
@@ -63,13 +68,8 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>com.github.drmashu</groupId>
+            <groupId>io.github.drmashu</groupId>
             <artifactId>dikon</artifactId>
-            <version>0.1-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>com.github.drmashu</groupId>
-            <artifactId>jkon</artifactId>
             <version>0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
