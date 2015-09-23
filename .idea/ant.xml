@@ -14,5 +14,13 @@
         <property name="buriteri.classes" value="$ProjectFileDir$/buriteri/target/classes" />
       </properties>
     </buildFile>
+    <buildFile url="file://$PROJECT_DIR$/buriSample/build.xml">
+      <properties>
+        <property name="buriteri.classes" value="$Classpath$" />
+        <property name="buriSample.templatedir" value="$ModuleFileDir$/template" />
+        <property name="buriSample.destdir" value="$ModuleFileDir$/src/gen/kotlin" />
+        <property name="kotlin.lib" value="C:\Users\貴博\.IntelliJIdea14\config\plugins\Kotlin\kotlinc\lib" />
+      </properties>
+    </buildFile>
   </component>
 </project>

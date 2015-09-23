@@ -20,7 +20,7 @@ public class PreCompilerTest {
     /**
      *
      */
-    Test fun testPreCompileEmpty() {
+    @Test fun testPreCompileEmpty() {
         val compiler = PreCompiler()
         val reader = StringReader("""@()
 """)
@@ -51,7 +51,7 @@ public class PreCompilerTest {
             line2 = reader2.readLine()
         }
     }
-    Test fun testPreCompile() {
+    @Test fun testPreCompile() {
         val compiler = PreCompiler()
         val reader = StringReader("""@(val list: List<String>)
 <!html>

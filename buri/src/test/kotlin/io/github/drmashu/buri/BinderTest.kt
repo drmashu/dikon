@@ -25,7 +25,7 @@ import java.io.StringWriter
  * @author NAGASAWA Takahiro<drmashu@gmail.com>
  */
 public class BinderTest {
-    Test fun testAction1() {
+    @Test fun testAction1() {
         val binder = object: Buri() {
             override val config: Map<String, Factory<*>>
                 get() = mapOf(
@@ -42,7 +42,7 @@ public class BinderTest {
         binder.service(req, res)
         assertEquals("TEST", resultWriter.buffer.toString())
     }
-    Test fun testAction2() {
+    @Test fun testAction2() {
         val binder = object: Buri() {
             override val config: Map<String, Factory<*>>
                 get() = mapOf(
@@ -58,7 +58,7 @@ public class BinderTest {
         binder.service(req, res)
         assertEquals("TEST", resultWriter.buffer.toString())
     }
-    Test fun testAction3() {
+    @Test fun testAction3() {
         val binder = object: Buri() {
             override val config: Map<String, Factory<*>>
                 get() = mapOf(
@@ -74,7 +74,7 @@ public class BinderTest {
         binder.service(req, res)
         assertEquals("", resultWriter.buffer.toString())
     }
-    Test fun testAction4() {
+    @Test fun testAction4() {
         val binder = object: Buri() {
             override val config: Map<String, Factory<*>>
                 get() = mapOf(
@@ -90,7 +90,7 @@ public class BinderTest {
         binder.service(req, res)
         assertEquals("", resultWriter.buffer.toString())
     }
-    Test fun testAction5() {
+    @Test fun testAction5() {
         val binder = object: Buri() {
             override val config: Map<String, Factory<*>>
                 get() = mapOf(
@@ -106,7 +106,7 @@ public class BinderTest {
         binder.service(req, res)
         assertEquals("TEST", resultWriter.buffer.toString())
     }
-    Test fun testAction6() {
+    @Test fun testAction6() {
         val binder = object: Buri() {
             override val config: Map<String, Factory<*>>
                 get() = mapOf(

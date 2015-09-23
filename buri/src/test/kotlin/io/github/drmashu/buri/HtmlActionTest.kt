@@ -16,7 +16,7 @@ import kotlin.test.assertEquals
  * Created by tnagasaw on 2015/08/27.
  */
 public class HtmlActionTest {
-    Test fun testEncode() {
+    @Test fun testEncode() {
         val req = mock(HttpServletRequest::class.java)
         val res = mock(HttpServletResponse::class.java)
         val resultWriter = StringWriter()

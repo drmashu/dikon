@@ -1,0 +1,26 @@
+@(val list: List<String>)
+<!DOCTYPE html>
+<!-- -->
+<html>
+<head></head>
+<body>
+drmashu@@gmail.com
+<br>
+<ol>
+@for(idx in 0..10) {@
+    @if(idx % 3 == 0) {@
+        <li> san!
+    @} else if(idx % 2 == 0) {@
+        <li> even
+    @} else {@
+        <li> odd
+    @}@
+@}@
+@//comment
+@for(text in list){@
+    <li>@{text}
+@}@
+</ol>
+<input name="aa" value="@{this.toString()}"/>
+</body>
+</html>
