@@ -14,7 +14,7 @@ DIコンテナである[Dikon](../README.md)に組み合わせる、Web用の(M)
 BuriTeriについては別途。
 
 ## 設定
-BuriもDikon同様設定ファイルはなく、コンストラクタにMapを設定します。
+BuriもDikon同様設定ファイルはなく、configプロパティが設定を記したMapを返すようにします。
 
 ファクトリについては、Dikonの説明文を参照してくだい。
 
@@ -26,31 +26,43 @@ BuriもDikon同様設定ファイルはなく、コンストラクタにMapを�
 また、パスは正規表現を使用でき、名前付きグループを指定することで、
 そのグループに該当する値をその名前でコンストラクタにインジェクションします。
 
-    Buri(mapOf(
-        Pair("/", Injection(startpage::class)),　// 通常の割り当て
-        Pair("/(?<id>[a-z0-9_@$]+)", Injection(Content::class)), // Contentにidをインジェクションする
-        Pair("/content", Injection(content::class))
-    ))
+    public class Sample : Buri() {
+        override val config: Map<String, Factory<*>>
+            get() = mapOf(
+                Pair("/", Injection(startpage::class)),　// 通常の割り当て
+                Pair("/(?<id>[a-z0-9_@$]+)", Injection(Content::class)), // Contentにidをインジェクションする
+                Pair("/content", Injection(content::class)
+        )
+    }
     
 リクエストのメソッドごとにアクションを切り替えたい場合は
 
-    Buri(mapOf(
-        Pair("/xxx:GET", Injection(GetXXX::class)), // GETメソッド
-        Pair("/xxx:POST", Injection(PostXXX::class)), // POSTメソッド
-        Pair("/xxx:PUT", Injection(PutXXX::class)), // PUTメソッド
-        Pair("/xxx:DELETE", Injection(DeleteXXX::class)), // DELETEメソッド
-        Pair("/content:POST,PUT", Injection(content::class)) // POSTまたはPUTメソッド
-    ))
+    public class Sample : Buri() {
+        override val config: Map<String, Factory<*>>
+            get() = mapOf(
+                Pair("/xxx:GET", Injection(GetXXX::class)), // GETメソッド
+                Pair("/xxx:POST", Injection(PostXXX::class)), // POSTメソッド
+                Pair("/xxx:PUT", Injection(PutXXX::class)), // PUTメソッド
+                Pair("/xxx:DELETE", Injection(DeleteXXX::class)), // DELETEメソッド
+                Pair("/content:POST,PUT", Injection(content::class)) // POSTまたはPUTメソッド
+        )
+    }
 
 のように、パスの後ろに「:」を付加し、カンマ区切りで対応させたいメソッド名を指定してください。
 
-### アクション
+## アクション
 
-アクションには
+アクションはActionクラス(または多くの場合はHTML向けに拡張したHtmlAction)を継承する必要があります。
+
+ActionにはRESTfulな実装に向けてget/post/put/deleteのメソッドに対応するメソッドを用意しています。
+
+
 
 ## 今後の予定
 
 + FormDTOをView(HTML)とViewModel間でやりとりする仕組み
 + Ajax
-+ RPC
++ RESTful RPC
++ WebSoket
++ 上記を組み合わせたWebページに対して行った操作に対するイベントハンドリングをサーバ側で行う仕組み
 + バインディングを型安全にしたいけど、DIとの相性は悪いだろうなぁ
