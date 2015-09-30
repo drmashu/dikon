@@ -6,7 +6,7 @@ import io.github.drmashu.dikon.Dikon
 import io.github.drmashu.dikon.Factory
 import io.github.drmashu.dikon.Holder
 import io.github.drmashu.dikon.Injection
-import org.junit.Test
+import org.eclipse.jetty.util.resource.Resource
 import java.io.Writer
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
@@ -19,13 +19,16 @@ import org.junit.After as after
 import org.mockito.Mockito.*
 import java.io.PrintWriter
 import java.io.StringWriter
+import javax.servlet.ServletConfig
+import javax.servlet.ServletContext
+
 //import kotlin.reflect.jvm.java
 
 /**
  * @author NAGASAWA Takahiro<drmashu@gmail.com>
  */
 public class BinderTest {
-    @Test fun testAction1() {
+    @test fun testAction1() {
         val binder = object: Buri() {
             override val config: Map<String, Factory<*>>
                 get() = mapOf(
@@ -42,7 +45,7 @@ public class BinderTest {
         binder.service(req, res)
         assertEquals("TEST", resultWriter.buffer.toString())
     }
-    @Test fun testAction2() {
+    @test fun testAction2() {
         val binder = object: Buri() {
             override val config: Map<String, Factory<*>>
                 get() = mapOf(
@@ -58,12 +61,15 @@ public class BinderTest {
         binder.service(req, res)
         assertEquals("TEST", resultWriter.buffer.toString())
     }
-    @Test fun testAction3() {
+    @test fun testAction3() {
         val binder = object: Buri() {
             override val config: Map<String, Factory<*>>
                 get() = mapOf(
                         Pair("/test/(?<test>[A-Za-z]+)", Injection(TestAction::class))
                 )
+            override fun getResource(path: String):Resource? {
+                return null
+            }
         }
         val req = mock(HttpServletRequest::class.java)
         `when`(req.pathInfo).thenReturn("/test/TEST/Test")
@@ -74,12 +80,16 @@ public class BinderTest {
         binder.service(req, res)
         assertEquals("", resultWriter.buffer.toString())
     }
-    @Test fun testAction4() {
+    @test fun testAction4() {
         val binder = object: Buri() {
             override val config: Map<String, Factory<*>>
                 get() = mapOf(
                         Pair("/test/(?<test>[A-Za-z]+):POST", Injection(TestAction::class))
                 )
+
+            override fun getResource(path: String):Resource? {
+                return null
+            }
         }
         val req = mock(HttpServletRequest::class.java)
         `when`(req.pathInfo).thenReturn("/test/TEST")
@@ -90,7 +100,7 @@ public class BinderTest {
         binder.service(req, res)
         assertEquals("", resultWriter.buffer.toString())
     }
-    @Test fun testAction5() {
+    @test fun testAction5() {
         val binder = object: Buri() {
             override val config: Map<String, Factory<*>>
                 get() = mapOf(
@@ -106,7 +116,7 @@ public class BinderTest {
         binder.service(req, res)
         assertEquals("TEST", resultWriter.buffer.toString())
     }
-    @Test fun testAction6() {
+    @test fun testAction6() {
         val binder = object: Buri() {
             override val config: Map<String, Factory<*>>
                 get() = mapOf(

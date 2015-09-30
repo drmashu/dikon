@@ -30,51 +30,51 @@ class DikonTest() {
                 }
             })
     ))
-    Test fun testDikonGet() {
+    @Test fun testDikonGet() {
         val comp = dikon["Test"]
         assertNotNull(comp)
         assert(comp is TestComponent)
     }
-    Test fun testDikonInjection() {
+    @Test fun testDikonInjection() {
         val comp = dikon["Test"]
         if (comp is TestComponent) {
             assertEquals("B", comp.A)
         }
     }
-    Test fun testDikonNotInjection() {
+    @Test fun testDikonNotInjection() {
         val comp = dikon["Test"]
         if (comp is TestComponent) {
             assertNull(comp.B)
         }
     }
-    Test fun testSingleton() {
+    @Test fun testSingleton() {
         val comp = dikon["Test"]
         if (comp is TestComponent) {
             val comp2 = dikon["Test"]
             assert(comp == comp2)
         }
     }
-    Test fun testInjection() {
+    @Test fun testInjection() {
         val comp = dikon["Test"]
         if (comp is TestComponent) {
             assertEquals("A", comp.Test2!!.A)
         }
     }
-    Test fun testInjectionWithAnnotation() {
+    @Test fun testInjectionWithAnnotation() {
         val comp = dikon.get("Test")
         if (comp is TestComponent) {
             assertEquals("A", comp.Test2!!.B)
         }
     }
 
-    Test fun testInjectionGet() {
+    @Test fun testInjectionGet() {
         val comp = Injection(TestComponent2::class).get(dikon)
         if (comp is TestComponent2) {
             assertEquals("A", comp.A)
             assertEquals("A", comp.B)
         }
     }
-    Test fun testSingletonGet() {
+    @Test fun testSingletonGet() {
         val comp = Singleton(Create(TestComponent::class)).get(dikon)
         assert(comp is TestComponent)
         if (comp is TestComponent) {
@@ -83,26 +83,26 @@ class DikonTest() {
             assertNull(comp.Test2)
         }
     }
-    Test fun testSingletonInjectionGet() {
+    @Test fun testSingletonInjectionGet() {
         val comp = Singleton(Injection(TestComponent2::class)).get(dikon)
         if (comp is TestComponent2) {
             assertEquals("A", comp.A)
             assertEquals("A", comp.B)
         }
     }
-    Test fun testDikonSetterInjection() {
+    @Test fun testDikonSetterInjection() {
         val comp = dikon["Test"]
         if (comp is TestComponent) {
             assertEquals("A", comp.C)
         }
     }
-    Test fun testDikonJavaClass() {
+    @Test fun testDikonJavaClass() {
         val comp = dikon["Test3"]
         if (comp is TestComponent3) {
             assertEquals("A", comp.a)
         }
     }
-    Test fun testInjectionMenyType() {
+    @Test fun testInjectionMenyType() {
         val comp = Injection(TestComponent2_::class).get(dikon)
         if (comp is TestComponent2_) {
             assertEquals("A", comp.A)

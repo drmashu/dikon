@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<project name="buriSample" default="precompile">
+    <taskdef name="buriteri" classpath="${buriteri.classes}" classname="io.github.drmashu.buri.template.BuriTeriTask"/>
+    <typedef resource="org/jetbrains/kotlin/ant/antlib.xml" classpath="${kotlin.lib}/kotlin-ant.jar"/>
+    <target name="precompile">
+        <buriteri srcdir="${buriSample.templatedir}" destdir="${buriSample.destdir}" packagename="test"/>
+    </target>
+</project>

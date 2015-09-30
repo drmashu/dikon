@@ -23,11 +23,8 @@
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="true" />
         <module name="buri" />
-        <module name="buriSample" />
-        <module name="buriteri" />
         <module name="dikon" />
         <module name="kson" />
-        <module name="oden" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>

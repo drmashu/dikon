@@ -38,7 +38,7 @@ public class Dikon(val objectMap: Map<String, Factory<*>>) : Container {
             val kClass = obj.javaClass.kotlin
             try {
                 members@ for(member in kClass.members) {
-                    if (member is KMutableProperty1<*, *>) {
+                    if (member is KMutableProperty<*>) {
                         for (annotation in member.annotations) {
                             // 注入元指定のアノテーションがある場合は、その名称で注入する
                             if (annotation is inject) {

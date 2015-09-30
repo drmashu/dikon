@@ -31,8 +31,8 @@ public class PreCompilerTest {
                 + "import java.util.*\n"
                 + "import java.io.Writer\n"
                 + "import javax.servlet.http.*\n"
-                + "import com.github.drmashu.buri.*\n"
-                + "class test(writer: Writer, request: HttpServletRequest, response: HttpServletResponse) : HtmlAction(writer, request, response) {\n"
+                + "import io.github.drmashu.buri.*\n"
+                + "class test(request: HttpServletRequest, response: HttpServletResponse) : HtmlAction(request, response) {\n"
                 + "\tpublic override fun get() {\n"
                 + "/* 1 */writer.write(\"\"\"\"\"\")\n"
                 + "\t}\n"
@@ -54,7 +54,7 @@ public class PreCompilerTest {
     @Test fun testPreCompile() {
         val compiler = PreCompiler()
         val reader = StringReader("""@(val list: List<String>)
-<!html>
+<!DOCTYPE html>
 <!-- -->
 <html>
 <head></head>
@@ -91,8 +91,8 @@ drmashu@@gmail.com
                 + "import java.util.*\n"
                 + "import java.io.Writer\n"
                 + "import javax.servlet.http.*\n"
-                + "import com.github.drmashu.buri.*\n"
-                + "class test(writer: Writer, request: HttpServletRequest, response: HttpServletResponse, val list: List<String>) : HtmlAction(writer, request, response) {\n"
+                + "import io.github.drmashu.buri.*\n"
+                + "class test(request: HttpServletRequest, response: HttpServletResponse, val list: List<String>) : HtmlAction(request, response) {\n"
                 + "\tpublic override fun get() {\n"
                 + "/* 1 */writer.write(\"\"\"<!DOCTYPE html>\n"
                 + "<!-- -->\n"
